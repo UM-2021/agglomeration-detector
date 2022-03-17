@@ -1,1 +1,1 @@
-# agglomeration-detector
+# Agglomeration Detector Service
