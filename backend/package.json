@@ -22,6 +22,7 @@
     "helmet": "^5.0.2",
     "http-errors": "^2.0.0",
     "jade": "^1.11.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.8",
     "morgan": "^1.10.0",
     "ngrok": "^4.3.1",
