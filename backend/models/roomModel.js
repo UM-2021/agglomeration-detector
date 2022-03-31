@@ -4,14 +4,16 @@ const roomSchema = new mongoose.Schema({
   capacity: {
     type: Number,
     required: [true, 'Introduce a max capacity for the room'],
+    default: 10,
   },
   air_data: {
-    type: JSON,
+    type: Object,
     required: false,
   },
   user_to_notifiy: {
-    type: Schema.Types.ObjectId,
+    type: Number,
     ref: 'User',
+    required: false,
   },
 });
 

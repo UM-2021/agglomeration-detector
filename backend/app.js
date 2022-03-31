@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 
 const usersRouter = require('./routes/userRouter');
+const roomsRouter = require('./routes/roomRouter');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -24,6 +25,7 @@ app.options('*', cors());
 app.use(helmet());
 
 app.use('/api/users', usersRouter);
+app.use('/api/rooms', roomsRouter);
 
 // catch 404 and forward to error handler
 app.all('*', (req, res, next) => {
