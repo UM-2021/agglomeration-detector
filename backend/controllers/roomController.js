@@ -1,16 +1,32 @@
-const { promisify } = require('util');
-const roomModel = require('../models/roomModel');
+const Room = require('../models/roomModel');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 
 exports.addRoom = catchAsync(async (req, res, next) => {
   console.log(req.body);
-  const room = new roomModel(req.body);
-  await room.save();
-  res.send(room);
+
+  const room = new Room({
+    capacity: 5,
+  });
+  await room.save(function (err, room) {
+    if (err) {
+      return next(err);
+    }
+    res.status(201).json({
+      status: 'success',
+      data: {
+        data: room,
+      },
+    });
+  });
 });
 
 exports.getRooms = catchAsync(async (req, res, next) => {
-  const rooms = await roomModel.find({});
-  res.send(rooms);
+  const rooms = await Room.find({});
+  res.status(200).json({
+    status: 'success',
+    results: rooms.length,
+    data: {
+      data: rooms,
+    },
+  });
 });

@@ -15,7 +15,8 @@ const createAndSendToken = (user, statusCode, req, res) => {
 
   res.cookie('jwt', token, {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + 24 * 60 * 60 * 1000
+      // Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
@@ -38,9 +39,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
-    role: req.body.role,
   });
-
   createAndSendToken(newUser, 201, req, res);
 });
 

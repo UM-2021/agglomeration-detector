@@ -27,7 +27,7 @@ mongoose
   .catch((err) => console.log('Error: ', err));
 
 const port = PORT || 3000;
-const server = app.listen(port, () => {
+const server = app.listen(port, '0.0.0.0', () => {
   console.log(`App running on port ${port}...`);
 });
 
