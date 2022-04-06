@@ -29,9 +29,9 @@ app.use(helmet());
 app.use('/api/users', usersRouter);
 app.use('/api/rooms', roomsRouter);
 
-// catch 404 and forward to error handler
-app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on the server`, 404));
+// Redirect to React App
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.use(globalErrorHandler);
