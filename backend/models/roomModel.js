@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const roomSchema = new mongoose.Schema({
   capacity: {
     type: Number,
-    // required: [true, 'Introduce a max capacity for the room'],
+    required: [true, 'Introduce a max capacity for the room'],
     default: 10,
     required: false,
   },
@@ -11,9 +11,13 @@ const roomSchema = new mongoose.Schema({
   //   type: Object,
   // },
   user_to_notifiy: {
-    type: Number,
-    default: 1,
+    type: String,
+    default: '1',
     required: false,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 });
 

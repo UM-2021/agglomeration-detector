@@ -9,7 +9,8 @@ const config = {
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
   PORT: process.env.PORT,
   JWT_SECRET: process.env.JWT_SECRET,
-  JWT_COOKIE_EXPIRES: process.env.JWT_COOKIE_EXPIRES,
+  JWT_COOKIE_EXPIRES_IN: process.env.JWT_COOKIE_EXPIRES_IN,
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
 };
 
 module.exports = config;

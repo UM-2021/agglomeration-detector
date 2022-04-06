@@ -11,8 +11,6 @@ const roomsRouter = require('./routes/roomRouter');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
-const Room = require('./models/roomModel');
-
 var app = express();
 
 app.use(logger('dev'));

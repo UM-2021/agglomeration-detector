@@ -3,10 +3,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const config = require('../config');
+const { JWT_SECRET, JWT_COOKIE_EXPIRES_IN, JWT_EXPIRES_IN } = config;
 
 const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+  return jwt.sign({ id }, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
   });
 };
 
@@ -14,10 +16,7 @@ const createAndSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
   res.cookie('jwt', token, {
-    expires: new Date(
-      Date.now() + 24 * 60 * 60 * 1000
-      // Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
+    expires: new Date(Date.now() + JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   });
@@ -34,12 +33,20 @@ const createAndSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
+  console.log(req.body);
+  const newUser = new User({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
   });
+  await newUser.save(function (err, newUser) {
+    if (err) {
+      console.log(err);
+      return next(err);
+    }
+  });
+
   createAndSendToken(newUser, 201, req, res);
 });
 
