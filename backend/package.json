@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "cd ../frontend && npm run build"
   },
   "keywords": [],
   "author": "",
