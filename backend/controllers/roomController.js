@@ -18,7 +18,7 @@ exports.addRoom = catchAsync(async (req, res, next) => {
 });
 
 exports.getRooms = catchAsync(async (req, res, next) => {
-  const rooms = await Room.find({});
+  const rooms = await Room.find({ user_to_notify: res.locals.user._id });
   res.status(200).json({
     status: 'success',
     results: rooms.length,
@@ -54,7 +54,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
 
 exports.deleteRoom = catchAsync(async (req, res, next) => {
   const room = await Room.deleteOne({ _id: req.params.id });
-  res.status(200).json({
+  res.status(204).json({
     status: 'success',
     data: {
       data: room,
