@@ -17,6 +17,11 @@ const sidebarConfig = [
     icon: getIcon('fluent:conference-room-28-filled')
   },
   {
+    title: 'alerts',
+    path: '/dashboard/alerts',
+    icon: getIcon('eva:alert-triangle-fill')
+  },
+  {
     title: 'Profile',
     path: '/profile',
     icon: getIcon('bxs:user-detail')
