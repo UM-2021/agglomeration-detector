@@ -6,7 +6,10 @@ import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import DashboardApp from '../pages/DashboardApp';
-import User from '../pages/User';
+import Room from '../pages/Room';
+import Blog from '../pages/Blog';
+import Alert from '../pages/Alert';
+import Products from '../pages/Products';
 import NotFound from '../pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -18,7 +21,11 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { path: 'rooms', element: <User /> }
+        { path: 'rooms', element: <Room /> },
+        { path: 'alerts', element: <Alert /> },
+        // Demo Purposes
+        { path: 'blog', element: <Blog /> },
+        { path: 'product', element: <Products /> }
       ]
     },
     {
