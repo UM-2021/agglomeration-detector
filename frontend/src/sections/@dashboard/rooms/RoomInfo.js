@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Card, Stack, Typography } from '@mui/material';
@@ -34,9 +35,15 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 214;
+RoomInfo.propTypes = {
+  capacity: PropTypes.number,
+  maxCapacity: PropTypes.number,
+  airQuality: PropTypes.string
+};
 
-export default function RoomInfo() {
+// ----------------------------------------------------------------------
+
+export default function RoomInfo({ capacity, maxCapacity, airQuality }) {
   return (
     <RootStyle>
       <Stack flexDirection="row" justifyContent="space-around" alignItems="center">
@@ -45,7 +52,7 @@ export default function RoomInfo() {
             <Iconify icon="fa6-solid:arrows-down-to-people" width={24} height={24} />
           </IconWrapperStyle>
           <Typography variant="h3">
-            {fShortenNumber(TOTAL)} / {fShortenNumber(TOTAL)}
+            {fShortenNumber(capacity)} / {fShortenNumber(maxCapacity)}
           </Typography>
           <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
             Current Capacity
@@ -55,7 +62,7 @@ export default function RoomInfo() {
           <IconWrapperStyle>
             <Iconify icon="akar-icons:air" width={24} height={24} />
           </IconWrapperStyle>
-          <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+          <Typography variant="h3">{airQuality}</Typography>
           <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
             Air Quality
           </Typography>

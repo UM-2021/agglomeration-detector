@@ -1,6 +1,17 @@
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 // material
-import { Grid, Button, Container, Stack, Typography, IconButton } from '@mui/material';
+import {
+  Grid,
+  Button,
+  Container,
+  Stack,
+  Typography,
+  IconButton,
+  LinearProgress,
+  Box,
+  Card,
+  styled
+} from '@mui/material';
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -11,11 +22,20 @@ import { RoomOccupacy, RoomPreview, RoomInfo } from '../sections/@dashboard/room
 
 // ----------------------------------------------------------------------
 
+const RootStyle = styled(Card)(({ theme }) => ({
+  textAlign: 'center',
+  padding: theme.spacing(3),
+  color: theme.palette.text.primary,
+  backgroundColor: theme.palette.white,
+  height: '100%'
+}));
+
 export default function RoomProfile() {
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log(parseInt(id, 10));
-  const { title, capacity } = ROOMS[parseInt(id, 10)];
+  const { title, capacity, maxCapacity } = ROOMS[parseInt(id, 10)];
+
+  const occupacy = (capacity / maxCapacity) * 100;
 
   return (
     <Page title={`${title} | AggDetector`}>
@@ -48,7 +68,25 @@ export default function RoomProfile() {
             <RoomPreview image={mockImgCover(1)} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <RoomInfo />
+            <RoomInfo capacity={capacity} maxCapacity={maxCapacity} airQuality="32*" />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <RootStyle sx={{ width: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', mr: 1 }}>
+                  <LinearProgress
+                    sx={{ height: 10, borderRadius: 5 }}
+                    variant="determinate"
+                    value={occupacy}
+                  />
+                </Box>
+                <Box sx={{ minWidth: 35 }}>
+                  <Typography variant="body2" color="text.secondary">{`${Math.round(
+                    occupacy
+                  )}%`}</Typography>
+                </Box>
+              </Box>
+            </RootStyle>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <RoomOccupacy />

@@ -5,7 +5,6 @@ import { styled } from '@mui/material/styles';
 import { Box, Link, Card, Grid, Typography, CardContent, alpha, Button } from '@mui/material';
 // utils
 import { fDate } from '../../../utils/formatTime';
-import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import Iconify from '../../../components/Iconify';
@@ -63,10 +62,13 @@ RoomCard.propTypes = {
 };
 
 export default function RoomCard({ room, index }) {
-  const { cover, title, capacity, alerts, createdAt } = room;
+  const { cover, title, capacity, maxCapacity, alerts, createdAt } = room;
 
   const ROOM_INFO = [
-    { number: capacity, icon: 'fluent:people-audience-20-filled' },
+    {
+      number: `${Math.round((capacity / maxCapacity) * 100)} %`,
+      icon: 'fluent:people-audience-20-filled'
+    },
     { number: alerts, icon: 'eva:alert-triangle-fill' }
   ];
 
@@ -130,7 +132,7 @@ export default function RoomCard({ room, index }) {
                   }}
                 >
                   <Iconify icon={info.icon} sx={{ width: 24, height: 24, mr: 0.5 }} />
-                  <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
+                  <Typography variant="caption">{info.number}</Typography>
                 </Box>
               ))}
             </Box>
