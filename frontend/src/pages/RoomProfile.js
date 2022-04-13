@@ -6,6 +6,8 @@ import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 //
 import ROOMS from '../_mocks_/rooms';
+import { mockImgCover } from '../utils/mockImages';
+import { RoomOccupacy, RoomPreview, RoomInfo } from '../sections/@dashboard/rooms';
 
 // ----------------------------------------------------------------------
 
@@ -42,9 +44,15 @@ export default function RoomProfile() {
         </Stack>
 
         <Grid container spacing={3}>
-          <Typography variant="h4" gutterBottom>
-            {`${capacity}`}
-          </Typography>
+          <Grid item xs={12} md={6} lg={4}>
+            <RoomPreview image={mockImgCover(1)} />
+          </Grid>
+          <Grid item xs={12} md={6} lg={8}>
+            <RoomInfo />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12}>
+            <RoomOccupacy />
+          </Grid>
         </Grid>
       </Container>
     </Page>
