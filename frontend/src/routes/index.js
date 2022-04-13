@@ -9,8 +9,10 @@ import DashboardApp from '../pages/DashboardApp';
 import Room from '../pages/Room';
 import Blog from '../pages/Blog';
 import Alert from '../pages/Alert';
+import User from '../pages/User';
 import Products from '../pages/Products';
 import NotFound from '../pages/Page404';
+import RoomProfile from '../pages/RoomProfile';
 
 // ----------------------------------------------------------------------
 
@@ -22,10 +24,12 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'rooms', element: <Room /> },
+        { path: 'rooms/:id', element: <RoomProfile /> },
         { path: 'alerts', element: <Alert /> },
         // Demo Purposes
         { path: 'blog', element: <Blog /> },
-        { path: 'product', element: <Products /> }
+        { path: 'product', element: <Products /> },
+        { path: 'user', element: <User /> }
       ]
     },
     {
