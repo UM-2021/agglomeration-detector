@@ -10,14 +10,11 @@ const roomSchema = new mongoose.Schema({
   // air_data: {
   //   type: Object,
   // },
-  user_to_notifiy: {
-    type: String,
-    default: '1',
-    required: false,
-  },
-  user: {
+  user_to_notify: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    default: '624d899fc8a03325e89cf851',
+    required: [true, 'Indicate the owner of the room'],
   },
 });
 
