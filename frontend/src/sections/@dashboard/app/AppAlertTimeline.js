@@ -17,29 +17,29 @@ import { fDateTime } from '../../../utils/formatTime';
 
 const TIMELINES = [
   {
-    title: '1983, orders, $4220',
+    title: 'Room A: Limit exceeded',
     time: faker.date.past(),
-    type: 'order1'
+    type: 'alert1'
   },
   {
-    title: '12 Invoices have been paid',
+    title: 'Room B: Limit exceeded',
     time: faker.date.past(),
-    type: 'order2'
+    type: 'alert2'
   },
   {
-    title: 'Order #37745 from September',
+    title: 'Room C: Bad Air quality',
     time: faker.date.past(),
-    type: 'order3'
+    type: 'alert3'
   },
   {
-    title: 'New order placed #XF-2356',
+    title: 'Room B: Bad Air quality',
     time: faker.date.past(),
-    type: 'order4'
+    type: 'alert4'
   },
   {
-    title: 'New order placed #XF-2346',
+    title: 'Room C: Limit excedeed',
     time: faker.date.past(),
-    type: 'order5'
+    type: 'alert5'
   }
 ];
 
@@ -58,10 +58,10 @@ function OrderItem({ item, isLast }) {
         <TimelineDot
           sx={{
             bgcolor:
-              (type === 'order1' && 'primary.main') ||
-              (type === 'order2' && 'success.main') ||
-              (type === 'order3' && 'info.main') ||
-              (type === 'order4' && 'warning.main') ||
+              (type === 'alert1' && 'primary.main') ||
+              (type === 'alert2' && 'success.main') ||
+              (type === 'alert3' && 'info.main') ||
+              (type === 'alert4' && 'warning.main') ||
               'error.main'
           }}
         />
@@ -77,7 +77,7 @@ function OrderItem({ item, isLast }) {
   );
 }
 
-export default function AppOrderTimeline() {
+export default function AppAlertTimeline() {
   return (
     <Card
       sx={{
@@ -86,7 +86,7 @@ export default function AppOrderTimeline() {
         }
       }}
     >
-      <CardHeader title="Order Timeline" />
+      <CardHeader title="Alert Timeline" />
       <CardContent>
         <Timeline>
           {TIMELINES.map((item, index) => (
