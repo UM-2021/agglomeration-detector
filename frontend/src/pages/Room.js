@@ -10,7 +10,7 @@ import { RoomCard } from '../sections/@dashboard/rooms';
 
 // ----------------------------------------------------------------------
 
-export default function Blog() {
+export default function Room() {
   return (
     <Page title="Rooms | AggDetector">
       <Container>

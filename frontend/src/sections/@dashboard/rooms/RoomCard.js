@@ -14,7 +14,7 @@ import Iconify from '../../../components/Iconify';
 
 const CardMediaStyle = styled('div')({
   position: 'relative',
-  paddingTop: 'calc(100% * 3 / 4)'
+  paddingTop: 'calc(100% / 3)'
 });
 
 const TitleStyle = styled(Link)({
@@ -27,7 +27,7 @@ const TitleStyle = styled(Link)({
 
 const InfoStyle = styled('div')(({ theme }) => ({
   display: 'flex',
-  flexWrap: 'wrap',
+  flexWrap: 'nowrap',
   justifyContent: 'space-between',
   marginTop: theme.spacing(3),
   color: theme.palette.text.disabled
@@ -71,7 +71,7 @@ export default function RoomCard({ room, index }) {
   ];
 
   return (
-    <Grid item xs={12} sm={6} md={3}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card sx={{ position: 'relative' }}>
         <CardMediaStyle>
           <SvgIconStyle
@@ -102,7 +102,7 @@ export default function RoomCard({ room, index }) {
           </Typography>
 
           <TitleStyle
-            to="#"
+            to={`${index}`}
             color="inherit"
             variant="subtitle2"
             underline="hover"
@@ -137,7 +137,8 @@ export default function RoomCard({ room, index }) {
             <Button
               color="inherit"
               variant="outlined"
-              href={`/dashboard/rooms/${index}`}
+              component={RouterLink}
+              to={`/dashboard/rooms/${index}`}
               endIcon={<Iconify icon="akar-icons:arrow-right" />}
             >
               Visit
