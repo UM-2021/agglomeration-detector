@@ -28,7 +28,7 @@ export const useAuth = () => {
         email,
         password
       });
-      console.log('LOGIN', res.data);
+
       localStorage.setItem(
         'aggUser',
         JSON.stringify({ ...res.data.data.user, token: res.data.token })
