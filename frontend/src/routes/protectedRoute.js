@@ -5,7 +5,6 @@ import { AuthContext } from '../hooks/useAuth';
 
 function ProtectedRoutes() {
   const { currentUser, isLoading } = useContext(AuthContext);
-  console.log(currentUser);
 
   if (isLoading) return <Loader />;
   return currentUser.authed ? <Outlet /> : <Navigate to="/login" />;

@@ -38,7 +38,6 @@ export default function LoginForm() {
     validationSchema: LoginSchema,
     onSubmit: async ({ email, password, remember }) => {
       const res = await login(email, password);
-      console.log('after login');
       navigate('/dashboard/app', { replace: true });
     }
   });
