@@ -36,7 +36,7 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const { logout } = useAuth();
-  const { navigate } = useNavigate();
+  const navigate = useNavigate();
 
   const handleOpen = () => {
     setOpen(true);
