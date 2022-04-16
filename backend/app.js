@@ -35,9 +35,9 @@ app.use(globalErrorHandler);
 
 // Redirect to React App
 app.get('*', (req, res) => {
-    console.log("Redirecting to React")
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
+  console.log("Redirecting to React")
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 module.exports = app;

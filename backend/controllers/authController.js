@@ -97,3 +97,19 @@ exports.protect = catchAsync(async (req, res, next) => {
   res.locals.user = currentUser;
   next();
 });
+
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  try {
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt || req.query.token,
+      JWT_SECRET
+    );
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) return next(new AppError('Invalid token.', 401));
+
+    return res.status(200).json({ status: 'success', user: currentUser });
+  } catch (err) {
+    return next(new AppError('Invalid token.', 401));
+  }
+})
