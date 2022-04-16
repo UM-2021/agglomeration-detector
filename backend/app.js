@@ -8,15 +8,19 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 const usersRouter = require('./routes/userRouter');
 const roomsRouter = require('./routes/roomRouter');
-const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
 var app = express();
 
+app.enable('trust proxy');
+
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(mongoSanitize());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
@@ -27,11 +31,13 @@ app.use(helmet());
 app.use('/api/users', usersRouter);
 app.use('/api/rooms', roomsRouter);
 
+app.use(globalErrorHandler);
+
 // Redirect to React App
 app.get('*', (req, res) => {
+  console.log("Redirecting to React")
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.use(globalErrorHandler);
 
 module.exports = app;

@@ -15,11 +15,13 @@ import {
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
+import { useAuth } from '../../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
@@ -34,8 +36,10 @@ export default function LoginForm() {
       remember: true
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/', { replace: true });
+    onSubmit: async ({ email, password, remember }) => {
+      const res = await login(email, password);
+      console.log('after login');
+      navigate('/dashboard/app', { replace: true });
     }
   });
 

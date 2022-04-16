@@ -2,7 +2,6 @@ const Room = require('../models/roomModel');
 const catchAsync = require('../utils/catchAsync');
 
 exports.addRoom = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const room = new Room(req.body);
   await room.save(function (err, room) {
     if (err) {

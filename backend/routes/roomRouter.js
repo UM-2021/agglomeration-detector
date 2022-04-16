@@ -1,13 +1,15 @@
 const express = require('express');
+const router = express.Router({ mergeParams: true });
+
 const roomController = require('../controllers/roomController');
 const authController = require('../controllers/authController');
 
-const router = express.Router();
+router.use(authController.protect);
 
-router.post('/', authController.protect, roomController.addRoom);
-router.get('/', authController.protect, roomController.getRooms);
-router.patch('/:id', authController.protect, roomController.updateRoom);
-router.get('/:id', authController.protect, roomController.getRoom);
-router.delete('/:id', authController.protect, roomController.deleteRoom);
+router.post('/', roomController.addRoom);
+router.get('/', roomController.getRooms);
+router.patch('/:id', roomController.updateRoom);
+router.get('/:id', roomController.getRoom);
+router.delete('/:id', roomController.deleteRoom);
 
 module.exports = router;

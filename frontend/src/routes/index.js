@@ -13,6 +13,7 @@ import User from '../pages/User';
 import Products from '../pages/Products';
 import NotFound from '../pages/Page404';
 import RoomProfile from '../pages/RoomProfile';
+import ProtectedRoutes from './protectedRoute';
 
 // ----------------------------------------------------------------------
 
@@ -22,14 +23,19 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'rooms', element: <Room /> },
-        { path: 'rooms/:id', element: <RoomProfile /> },
-        { path: 'alerts', element: <Alert /> },
-        // Demo Purposes
-        { path: 'blog', element: <Blog /> },
-        { path: 'product', element: <Products /> },
-        { path: 'user', element: <User /> }
+        {
+          element: <ProtectedRoutes />,
+          children: [
+            { path: 'app', element: <DashboardApp /> },
+            { path: 'rooms', element: <Room /> },
+            { path: 'rooms/:id', element: <RoomProfile /> },
+            { path: 'alerts', element: <Alert /> },
+            // Demo Purposes
+            { path: 'blog', element: <Blog /> },
+            { path: 'product', element: <Products /> },
+            { path: 'user', element: <User /> }
+          ]
+        }
       ]
     },
     {
