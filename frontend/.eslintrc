@@ -54,6 +54,10 @@
       "react/destructuring-assignment": 0,
       "import/no-extraneous-dependencies": 0,
       "react/jsx-key": 1,
+      "react/function-component-definition": [ 
+        2,
+        { "unnamedComponents": "arrow-function" }
+      ],
       "react-hooks/rules-of-hooks": 2,
       "no-unused-vars": [
         1,
