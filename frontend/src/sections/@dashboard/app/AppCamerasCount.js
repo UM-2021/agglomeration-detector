@@ -1,8 +1,10 @@
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
+import instance from '../../../middlewares/axios';
 // component
 import Iconify from '../../../components/Iconify';
 
@@ -34,15 +36,26 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 3;
-
 export default function AppCamerasCount() {
+  const [camerasCount, setCamerasCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCamerasCount = async () => {
+      const { data } = await instance('/api/rooms');
+      const rooms = data.data.data;
+
+      if (rooms) setCamerasCount(rooms.length);
+    };
+
+    fetchCamerasCount();
+  }, []);
+
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Iconify icon="icon-park-outline:surveillance-cameras" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(camerasCount)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Cameras Count
       </Typography>
