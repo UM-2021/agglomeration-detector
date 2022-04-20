@@ -9,9 +9,7 @@ exports.addRoom = catchAsync(async (req, res, next) => {
     }
     res.status(201).json({
       status: 'success',
-      data: {
-        data: room,
-      },
+      data: room,
     });
   });
 });
@@ -21,9 +19,7 @@ exports.getRooms = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: rooms.length,
-    data: {
-      data: rooms,
-    },
+    data: rooms,
   });
 });
 
@@ -31,9 +27,7 @@ exports.getRoom = catchAsync(async (req, res, next) => {
   const room = await Room.findById(req.params.id);
   res.status(200).json({
     status: 'success',
-    data: {
-      data: room,
-    },
+    data: room,
   });
 });
 
@@ -45,9 +39,7 @@ exports.updateRoom = catchAsync(async (req, res, next) => {
   const result = await Room.findByIdAndUpdate(id, updatedRoom, options);
   res.status(200).json({
     status: 'success',
-    data: {
-      data: result,
-    },
+    data: result,
   });
 });
 
@@ -55,8 +47,6 @@ exports.deleteRoom = catchAsync(async (req, res, next) => {
   const room = await Room.deleteOne({ _id: req.params.id });
   res.status(204).json({
     status: 'success',
-    data: {
-      data: room,
-    },
+    data: room,
   });
 });

@@ -26,9 +26,7 @@ const createAndSendToken = (user, statusCode, req, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
-    data: {
-      user,
-    },
+    data: user,
   });
 };
 
@@ -83,13 +81,16 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new AppError('You are not logged in! Please login to get access.', 401));
+    return next(
+      new AppError('You are not logged in! Please login to get access.', 401)
+    );
   }
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   const currentUser = await User.findById(decoded.id);
 
-  if (!currentUser) return next(new AppError('The user no longer exists.', 401));
+  if (!currentUser)
+    return next(new AppError('The user no longer exists.', 401));
 
   req.user = currentUser;
   res.locals.user = currentUser;
@@ -110,4 +111,4 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
   } catch (err) {
     return next(new AppError('Invalid token.', 401));
   }
-})
+});
