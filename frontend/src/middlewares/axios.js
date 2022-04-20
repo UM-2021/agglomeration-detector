@@ -6,4 +6,11 @@ const instance = axios.create({
   }`
 });
 
+instance.interceptors.request.use((config) => {
+  const user = JSON.parse(localStorage.getItem('aggUser'));
+  config.headers.Authorization = user && user.token ? `Bearer ${user.token}` : '';
+
+  return config;
+});
+
 export default instance;
