@@ -49,7 +49,9 @@ export default function Room() {
 
         <Grid container spacing={3}>
           {loading ? (
-            <Loader />
+            <Grid item>
+              <Loader />
+            </Grid>
           ) : rooms.length === 0 ? (
             <Grid item>
               <Typography variant="p" gutterBottom>
