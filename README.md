@@ -28,7 +28,6 @@ REACT_APP_IP_ADDRESS=localhost:3000
 ### 2 - Start backend
 
 ```
-cd backend
 npm run dev
 ```
 
