@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar, Grid } from '@mui/material';
 // mocks_
-import account from '../../_mocks_/account';
+// import account from '../../_mocks_/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 // components
@@ -14,6 +14,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import sidebarConfig from './SidebarConfig';
+import { AuthContext } from '../../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -42,8 +43,11 @@ DashboardSidebar.propTypes = {
 };
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
-  const { pathname } = useLocation();
+  const {
+    currentUser: { user }
+  } = useContext(AuthContext);
 
+  const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
 
   useEffect(() => {
@@ -76,13 +80,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src="/static/mock-images/avatars/avatar_default.jpg" alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {user.name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                Role
               </Typography>
             </Box>
           </AccountStyle>
