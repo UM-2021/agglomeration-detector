@@ -29,9 +29,9 @@ app.options('*', cors());
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      connectSrc: ['self'],
-      imgSrc: ['self', '*'],
-      fontSrc: ['self', '*']
+      connectSrc: ['*'],
+      imgSrc: ['*'],
+      fontSrc: ['*']
     }
   }
 }));
