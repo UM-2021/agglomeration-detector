@@ -26,7 +26,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.options('*', cors());
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      connectSrc: ['self'],
+      imgSrc: ['self', '*'],
+      fontSrc: ['self', '*']
+    }
+  }
+}));
 
 app.use('/api/users', usersRouter);
 app.use('/api/rooms', roomsRouter);

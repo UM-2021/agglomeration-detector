@@ -56,7 +56,7 @@ export default function RoomProfile() {
     };
 
     fetchRoom();
-  }, []);
+  }, [id]);
 
   if (loading) return <Loader />;
 
