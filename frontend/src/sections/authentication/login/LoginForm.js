@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
+import { useSnackbar } from 'notistack';
 // material
 import {
   Link,
@@ -21,6 +22,7 @@ import { useAuth } from '../../../hooks/useAuth';
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -36,9 +38,13 @@ export default function LoginForm() {
       remember: true
     },
     validationSchema: LoginSchema,
-    onSubmit: async ({ email, password, remember }) => {
+    onSubmit: async ({ email, password }) => {
       const res = await login(email, password);
-      navigate('/dashboard/app', { replace: true });
+      if (res.status > 299) enqueueSnackbar(res.data.message, { variant: 'error' });
+      else {
+        enqueueSnackbar('Login Successful!', { variant: 'success' });
+        navigate('/dashboard/app', { replace: true });
+      }
     }
   });
 

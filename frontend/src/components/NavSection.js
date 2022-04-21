@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
+import { NavLink as RouterLink, matchPath, useLocation, useNavigate } from 'react-router-dom';
 // material
 import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 //
+import { useSnackbar } from 'notistack';
 import Iconify from './Iconify';
+import { useAuth } from '../hooks/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -50,12 +52,23 @@ NavItem.propTypes = {
 
 function NavItem({ item, active }) {
   const theme = useTheme();
+  const { logout } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const isActiveRoot = active(item.path);
   const { title, path, icon, info, children } = item;
   const [open, setOpen] = useState(isActiveRoot);
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
+  };
+
+  const handleClick = async () => {
+    if (item.button) {
+      await logout();
+      enqueueSnackbar('See you soon!', { variant: 'success' });
+      navigate('/login', { replace: true });
+    }
   };
 
   const activeRootStyle = {
@@ -139,6 +152,7 @@ function NavItem({ item, active }) {
       sx={{
         ...(isActiveRoot && activeRootStyle)
       }}
+      onClick={handleClick}
     >
       <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
       <ListItemText disableTypography primary={title} />
@@ -158,9 +172,13 @@ export default function NavSection({ navConfig, ...other }) {
   return (
     <Box {...other}>
       <List disablePadding>
-        {navConfig.map((item) => (
-          <NavItem key={item.title} item={item} active={match} />
-        ))}
+        {navConfig.map((item) => {
+          if (item.button) {
+            return <NavItem key={item.title} item={item} active={match} />;
+          }
+
+          return <NavItem key={item.title} item={item} active={match} />;
+        })}
       </List>
     </Box>
   );

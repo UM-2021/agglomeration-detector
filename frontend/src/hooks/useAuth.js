@@ -56,5 +56,33 @@ export const useAuth = () => {
     // setCurrentUser({ user: {}, authed: false });
   };
 
-  return { login, logout };
+  const register = async (name, email, password, confirmPassword) => {
+    try {
+      const res = await instance.post('/api/users/signup', {
+        name,
+        email,
+        password,
+        confirmPassword
+      });
+      console.log('REGISTER', res.data);
+      localStorage.setItem(
+        'aggUser',
+        JSON.stringify({ ...res.data.data.user, token: res.data.token })
+      );
+
+      await setUserContext();
+      // setCurrentUser({ user: res.data.data.user, authed: true });
+      setLoading(false);
+
+      return res;
+    } catch (e) {
+      await setUserContext();
+      // setCurrentUser({ user: {}, authed: false });
+      setLoading(false);
+
+      return e.response;
+    }
+  };
+
+  return { login, logout, register };
 };
