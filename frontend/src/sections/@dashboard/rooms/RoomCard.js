@@ -56,17 +56,20 @@ const IconWrapperStyle = styled('div')(({ theme, color }) => ({
 
 // ----------------------------------------------------------------------
 
+const COLORS = ['#FFC107', '#00AB55', '#1890FF', '#FFC0CB', '#FF4842', '#94D82D'];
+
 RoomCard.propTypes = {
   room: PropTypes.object.isRequired,
   index: PropTypes.number
 };
 
 export default function RoomCard({ room, index }) {
-  const { cover, title, capacity, maxCapacity, alerts, createdAt } = room;
+  const { _id: id, name, capacity, createdAt } = room;
+  const alerts = 0;
 
   const ROOM_INFO = [
     {
-      number: `${Math.round((capacity / maxCapacity) * 100)} %`,
+      number: `${Math.round((1 / capacity) * 100)} %`,
       icon: 'fluent:people-audience-20-filled'
     },
     { number: alerts, icon: 'eva:alert-triangle-fill' }
@@ -87,11 +90,11 @@ export default function RoomCard({ room, index }) {
               position: 'absolute'
             }}
           />
-          <IconWrapperStyle color={cover}>
+          <IconWrapperStyle color={COLORS[index % COLORS.length]}>
             <Iconify icon="fluent:conference-room-28-filled" width={18} height={18} />
           </IconWrapperStyle>
 
-          <CoverStyle style={{ backgroundColor: cover }} />
+          <CoverStyle style={{ backgroundColor: COLORS[index % COLORS.length] }} />
         </CardMediaStyle>
 
         <CardContent sx={{ pt: 4 }}>
@@ -110,7 +113,7 @@ export default function RoomCard({ room, index }) {
             underline="hover"
             component={RouterLink}
           >
-            {title}
+            {name}
           </TitleStyle>
 
           <InfoStyle>
@@ -140,7 +143,7 @@ export default function RoomCard({ room, index }) {
               color="inherit"
               variant="outlined"
               component={RouterLink}
-              to={`/dashboard/rooms/${index}`}
+              to={`/dashboard/rooms/${id}`}
               endIcon={<Iconify icon="akar-icons:arrow-right" />}
             >
               Visit

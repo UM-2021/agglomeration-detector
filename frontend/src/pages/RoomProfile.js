@@ -1,4 +1,5 @@
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 // material
 import {
   Grid,
@@ -16,9 +17,12 @@ import {
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
 //
-import ROOMS from '../_mocks_/rooms';
+// import ROOMS from '../_mocks_/rooms';
+
 import { mockImgCover } from '../utils/mockImages';
 import { RoomOccupacy, RoomPreview, RoomInfo } from '../sections/@dashboard/rooms';
+import instance from '../middlewares/axios';
+import Loader from '../components/Loader';
 
 // ----------------------------------------------------------------------
 
@@ -33,12 +37,31 @@ const RootStyle = styled(Card)(({ theme }) => ({
 export default function RoomProfile() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { title, capacity, maxCapacity } = ROOMS[parseInt(id, 10)];
+  const [loading, setLoading] = useState(true);
+  const [occupacy, setOccupacy] = useState(0);
+  const [room, setRoom] = useState(null);
+  // const { title, capacity, maxCapacity } = ROOMS[parseInt(id, 10)];
 
-  const occupacy = (capacity / maxCapacity) * 100;
+  useEffect(() => {
+    const fetchRoom = async () => {
+      const { data } = await instance(`/api/rooms/${id}`);
+      const room = data.data.data;
+      if (room) setRoom(room);
+      setLoading(false);
+
+      // TODO: Fetch current capacity by X seconds and calculate occupacy
+      setInterval(() => {
+        setOccupacy((1 / room.capacity) * 100);
+      }, 10000);
+    };
+
+    fetchRoom();
+  }, []);
+
+  if (loading) return <Loader />;
 
   return (
-    <Page title={`${title} | AggDetector`}>
+    <Page title={`${room.name} | AggDetector`}>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Stack direction="row" alignItems="center" justifyContent="center">
@@ -51,7 +74,7 @@ export default function RoomProfile() {
             >
               <Iconify icon="eva:arrow-ios-back-outline" fontSize="inherit" color="black" />
             </IconButton>
-            <Typography variant="h4">{`Room: ${title}`}</Typography>
+            <Typography variant="h4">{`Room: ${room.name}`}</Typography>
           </Stack>
           <Button
             variant="contained"
@@ -68,7 +91,7 @@ export default function RoomProfile() {
             <RoomPreview image={mockImgCover(1)} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <RoomInfo capacity={capacity} maxCapacity={maxCapacity} airQuality="32*" />
+            <RoomInfo roomdId={id} capacity={room.capacity} />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <RootStyle sx={{ width: '100%' }}>
