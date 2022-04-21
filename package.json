@@ -5,6 +5,7 @@
   "main": "backend/app.js",
   "scripts": {
     "start": "cd backend && node server.js",
+    "start:prod": "cd backend && NODE_ENV=production node server.js",
     "dev": "cd backend && nodemon server.js",
     "postinstall": "cd frontend && npm i",
     "build": "cd frontend && npm run build",

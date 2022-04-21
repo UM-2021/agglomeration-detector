@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 // material
 import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -13,6 +14,7 @@ import { useAuth } from '../../../hooks/useAuth';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -42,7 +44,12 @@ export default function RegisterForm() {
     onSubmit: async ({ firstName, lastName, email, password, confirmPassword }) => {
       const name = `${firstName.trim()} ${lastName.trim()}`;
       const res = await register(name, email, password, confirmPassword);
-      navigate('/dashboard/app', { replace: true });
+
+      if (res.status > 299) enqueueSnackbar(res.data.message, { variant: 'error' });
+      else {
+        enqueueSnackbar('Registration Successful!', { variant: 'success' });
+        navigate('/dashboard/app', { replace: true });
+      }
     }
   });
 
