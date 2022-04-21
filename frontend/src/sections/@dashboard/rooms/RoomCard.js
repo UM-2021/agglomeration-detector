@@ -107,7 +107,7 @@ export default function RoomCard({ room, index }) {
           </Typography>
 
           <TitleStyle
-            to={`${index}`}
+            to={id}
             color="inherit"
             variant="subtitle2"
             underline="hover"
