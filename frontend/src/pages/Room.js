@@ -50,6 +50,12 @@ export default function Room() {
         <Grid container spacing={3}>
           {loading ? (
             <Loader />
+          ) : rooms.length === 0 ? (
+            <Grid item>
+              <Typography variant="p" gutterBottom>
+                No rooms registered.
+              </Typography>
+            </Grid>
           ) : (
             rooms.map((room, index) => <RoomCard key={room._id} room={room} index={index} />)
           )}
