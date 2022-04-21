@@ -21,7 +21,7 @@ export default function Room() {
   useEffect(() => {
     const fetchRooms = async () => {
       const { data } = await instance('/api/rooms');
-      const rooms = data.data.data;
+      const rooms = data.data;
 
       if (rooms) setRooms(rooms);
       setLoading(false);

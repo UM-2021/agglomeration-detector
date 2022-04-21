@@ -45,7 +45,7 @@ export default function RoomProfile() {
   useEffect(() => {
     const fetchRoom = async () => {
       const { data } = await instance(`/api/rooms/${id}`);
-      const room = data.data.data;
+      const room = data.data;
       if (room) setRoom(room);
       setLoading(false);
 
