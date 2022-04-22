@@ -1,3 +1,5 @@
+import { SnackbarProvider } from 'notistack';
+import Slide from '@mui/material/Slide';
 // routes
 import Router from './routes';
 // theme
@@ -18,10 +20,16 @@ export default function App() {
   return (
     <AuthContext.Provider value={{ currentUser, setCurrentUser, isLoading, setLoading }}>
       <ThemeConfig>
-        <ScrollToTop />
-        <GlobalStyles />
-        <BaseOptionChartStyle />
-        <Router />
+        <SnackbarProvider maxSnack={3} anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      TransitionComponent={Slide}>
+          <ScrollToTop />
+          <GlobalStyles />
+          <BaseOptionChartStyle />
+          <Router />
+        </SnackbarProvider>
       </ThemeConfig>
     </AuthContext.Provider>
   );

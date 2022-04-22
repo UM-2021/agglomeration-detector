@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Card, Stack, Typography } from '@mui/material';
@@ -36,14 +37,24 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 RoomInfo.propTypes = {
-  capacity: PropTypes.number,
-  maxCapacity: PropTypes.number,
-  airQuality: PropTypes.string
+  roomId: PropTypes.string,
+  capacity: PropTypes.number
 };
 
 // ----------------------------------------------------------------------
 
-export default function RoomInfo({ capacity, maxCapacity, airQuality }) {
+export default function RoomInfo({ capacity, roomId }) {
+  const [airQuality, setAirQuality] = useState(0);
+  const [currentCapacity, setCurrentCapacity] = useState(0);
+
+  // TODO: Fetch current capacity and airquelity over time
+  useEffect(() => {
+    setInterval(() => {
+      setAirQuality(32);
+      setCurrentCapacity(1);
+    }, 10000);
+  }, []);
+
   return (
     <RootStyle>
       <Stack flexDirection="row" justifyContent="space-around" alignItems="center">
@@ -52,7 +63,7 @@ export default function RoomInfo({ capacity, maxCapacity, airQuality }) {
             <Iconify icon="fa6-solid:arrows-down-to-people" width={24} height={24} />
           </IconWrapperStyle>
           <Typography variant="h3">
-            {fShortenNumber(capacity)} / {fShortenNumber(maxCapacity)}
+            {fShortenNumber(currentCapacity)} / {fShortenNumber(capacity)}
           </Typography>
           <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
             Current Capacity

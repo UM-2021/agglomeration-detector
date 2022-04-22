@@ -28,8 +28,9 @@ const sidebarConfig = [
   },
   {
     title: 'logout',
-    path: '/logout',
-    icon: getIcon('ri:logout-circle-r-fill')
+    path: '#',
+    icon: getIcon('ri:logout-circle-r-fill'),
+    button: true
   }
 ];
 

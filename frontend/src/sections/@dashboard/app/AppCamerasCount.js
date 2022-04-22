@@ -42,7 +42,7 @@ export default function AppCamerasCount() {
   useEffect(() => {
     const fetchCamerasCount = async () => {
       const { data } = await instance('/api/rooms');
-      const rooms = data.data.data;
+      const rooms = data.data;
 
       if (rooms) setCamerasCount(rooms.length);
     };
