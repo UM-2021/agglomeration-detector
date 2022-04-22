@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const roomSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Introduce the name of the room']
+    required: [true, 'Introduce the name of the room'],
   },
   capacity: {
     type: Number,
@@ -18,8 +18,8 @@ const roomSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
 module.exports = mongoose.model('Room', roomSchema);

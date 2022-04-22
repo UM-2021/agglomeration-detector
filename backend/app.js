@@ -9,6 +9,10 @@ const mongoSanitize = require('express-mongo-sanitize');
 const usersRouter = require('./routes/userRouter');
 const roomsRouter = require('./routes/roomRouter');
 const alertsRouter = require('./routes/alertRouter');
+const hourlyReportsRouter = require('./routes/hourlyReportRouter');
+const dailyReportsRouter = require('./routes/dailyReportRouter');
+const weeklyReportsRouter = require('./routes/weeklyReportRouter');
+const liveReportsRouter = require('./routes/liveReportRouter');
 
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -28,19 +32,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.options('*', cors());
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      connectSrc: ['*'],
-      imgSrc: ['*'],
-      fontSrc: ['*']
-    }
-  }
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        connectSrc: ['*'],
+        imgSrc: ['*'],
+        fontSrc: ['*'],
+      },
+    },
+  })
+);
 
 app.use('/api/users', usersRouter);
 app.use('/api/rooms', roomsRouter);
-app.use('/api/alert', alertsRouter);
+app.use('/api/alerts', alertsRouter);
+app.use('/api/hourlyReports', hourlyReportsRouter);
+app.use('/api/dailyReports', dailyReportsRouter);
+app.use('/api/weeklyReports', weeklyReportsRouter);
+app.use('/api/liveReports', liveReportsRouter);
 
 app.use(globalErrorHandler);
 

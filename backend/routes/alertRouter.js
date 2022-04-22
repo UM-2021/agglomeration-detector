@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 const alertController = require('../controllers/alertController');
+const authController = require('../controllers/authController');
 
 router.use(authController.protect);
 

@@ -15,7 +15,7 @@ exports.addAlert = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlerts = catchAsync(async (req, res, next) => {
-  const alerts = await Alert.find({ room_id: res.locals.room._id });
+  const alerts = await Alert.find({ room_id: req.body.room_id });
   res.status(200).json({
     status: 'success',
     results: alerts.length,
@@ -24,8 +24,31 @@ exports.getAlerts = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlert = catchAsync(async (req, res, next) => {
-  const alert = await Alert.findById(req.params.id);
+  const alert = await Alert.find({
+    _id: req.params.id,
+    room_id: req.body.room_id,
+  });
   res.status(200).json({
+    status: 'success',
+    data: alert,
+  });
+});
+
+exports.updateAlert = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const updatedAlert = req.body;
+  const options = { new: true };
+
+  const result = await Alert.findByIdAndUpdate(id, updatedAlert, options);
+  res.status(200).json({
+    status: 'success',
+    data: result,
+  });
+});
+
+exports.deleteAlert = catchAsync(async (req, res, next) => {
+  const alert = await Alert.deleteOne({ _id: req.params.id });
+  res.status(204).json({
     status: 'success',
     data: alert,
   });
