@@ -8,6 +8,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 const usersRouter = require('./routes/userRouter');
 const roomsRouter = require('./routes/roomRouter');
+const alertsRouter = require('./routes/alertRouter');
+
 const globalErrorHandler = require('./controllers/errorController');
 
 var app = express();
@@ -30,14 +32,14 @@ app.use(helmet());
 
 app.use('/api/users', usersRouter);
 app.use('/api/rooms', roomsRouter);
+app.use('/api/alert', alertsRouter);
 
 app.use(globalErrorHandler);
 
 // Redirect to React App
 app.get('*', (req, res) => {
-  console.log("Redirecting to React")
+  console.log('Redirecting to React');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 
 module.exports = app;
