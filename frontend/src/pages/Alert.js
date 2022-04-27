@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // material
 import {
   Card,
@@ -21,17 +21,24 @@ import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { AlertListToolbar, AlertListHead, AlertMoreMenu } from '../sections/@dashboard/alerts';
+import Loader from '../components/Loader';
+import instance from '../middlewares/axios';
 //
-import ALERTLIST from '../_mocks_/alerts';
+// import ALERTLIST from '../_mocks_/alerts';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'roomName', label: 'Room', alignRight: false },
+  { id: 'room', label: 'Room', alignRight: false },
   { id: 'type', label: 'Type', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'handled', label: 'Status', alignRight: false },
   { id: '' }
 ];
+
+const TYPES = {
+  capacity: 'Maximum capacity traspassed',
+  air: 'Bad air quality'
+};
 
 // ----------------------------------------------------------------------
 
@@ -61,7 +68,7 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(
       array,
-      (_alert) => _alert.roomName.toLowerCase().indexOf(query.toLowerCase()) !== -1
+      (_alert) => _alert.room.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
     );
   }
   return stabilizedThis.map((el) => el[0]);
@@ -74,6 +81,18 @@ export default function Alert() {
   const [orderBy, setOrderBy] = useState('roomName');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      const { data } = await instance('/api/alerts');
+      setAlerts(data.data);
+      setLoading(false);
+    };
+
+    fetchAlerts();
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -83,18 +102,19 @@ export default function Alert() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = ALERTLIST.map((n) => n.roomName);
+      const newSelecteds = alerts.filter((n) => !n.handled).map((n) => n.id);
+      console.log(newSelecteds);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -121,9 +141,9 @@ export default function Alert() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ALERTLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - alerts.length) : 0;
 
-  const filteredAlerts = applySortFilter(ALERTLIST, getComparator(order, orderBy), filterName);
+  const filteredAlerts = applySortFilter(alerts, getComparator(order, orderBy), filterName);
 
   const isAlertNotFound = filteredAlerts.length === 0;
 
@@ -150,57 +170,72 @@ export default function Alert() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={ALERTLIST.length}
+                  rowCount={alerts.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredAlerts
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const { id, roomName, type, status } = row;
-                      const isItemSelected = selected.indexOf(roomName) !== -1;
+                  {loading ? (
+                    <TableRow>
+                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                        <Loader />
+                      </TableCell>
+                    </TableRow>
+                  ) : alerts.length === 0 ? (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={6}>No alerts</TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredAlerts
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row) => {
+                        const {
+                          id,
+                          room: { name },
+                          type,
+                          handled
+                        } = row;
+                        const isItemSelected = selected.indexOf(id) !== -1;
 
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={isItemSelected}
-                          aria-checked={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={isItemSelected}
-                              onChange={(event) => handleClick(event, roomName)}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{roomName}</TableCell>
-                          <TableCell align="left">{type}</TableCell>
-                          <TableCell align="left">
-                            <Label
-                              variant="ghost"
-                              color={(status === 'active' && 'error') || 'success'}
-                            >
-                              {sentenceCase(status)}
-                            </Label>
-                          </TableCell>
+                        return (
+                          <TableRow
+                            hover
+                            key={id}
+                            tabIndex={-1}
+                            role="checkbox"
+                            selected={isItemSelected}
+                            aria-checked={isItemSelected}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                checked={isItemSelected}
+                                disabled={handled}
+                                onChange={(event) => handleClick(event, id)}
+                              />
+                            </TableCell>
+                            <TableCell align="left">{name}</TableCell>
+                            <TableCell align="left">{TYPES[type]}</TableCell>
+                            <TableCell align="left">
+                              <Label variant="ghost" color={(handled && 'success') || 'error'}>
+                                {sentenceCase(handled ? 'handled' : 'active')}
+                              </Label>
+                            </TableCell>
 
-                          <TableCell align="right">
-                            <AlertMoreMenu />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                            <TableCell align="right">
+                              <AlertMoreMenu />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                  )}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
                     </TableRow>
                   )}
                 </TableBody>
-                {isAlertNotFound && (
+                {isAlertNotFound && !loading && (
                   <TableBody>
                     <TableRow>
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
@@ -216,7 +251,7 @@ export default function Alert() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={ALERTLIST.length}
+            count={alerts.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

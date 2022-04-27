@@ -15,7 +15,7 @@ exports.addDailyReport = catchAsync(async (req, res, next) => {
 });
 
 exports.getDailyReports = catchAsync(async (req, res, next) => {
-  const dailyReports = await DailyReport.find({ room_id: req.body.room_id });
+  const dailyReports = await DailyReport.find({ room: req.body.room });
   res.status(200).json({
     status: 'success',
     results: dailyReports.length,
@@ -26,7 +26,7 @@ exports.getDailyReports = catchAsync(async (req, res, next) => {
 exports.getDailyReport = catchAsync(async (req, res, next) => {
   const dailyReports = await DailyReport.find({
     _id: req.params.id,
-    room_id: req.body.room_id,
+    room: req.body.room,
   });
   res.status(200).json({
     status: 'success',

@@ -15,7 +15,7 @@ exports.addWeeklyReport = catchAsync(async (req, res, next) => {
 });
 
 exports.getWeeklyReports = catchAsync(async (req, res, next) => {
-  const weeklyReports = await WeeklyReport.find({ room_id: req.body.room_id });
+  const weeklyReports = await WeeklyReport.find({ room: req.body.room });
   res.status(200).json({
     status: 'success',
     results: weeklyReports.length,
@@ -26,7 +26,7 @@ exports.getWeeklyReports = catchAsync(async (req, res, next) => {
 exports.getWeeklyReport = catchAsync(async (req, res, next) => {
   const weeklyReports = await WeeklyReport.find({
     _id: req.params.id,
-    room_id: req.body.room_id,
+    room: req.body.room,
   });
   res.status(200).json({
     status: 'success',

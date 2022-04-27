@@ -15,7 +15,7 @@ exports.addHourlyReport = catchAsync(async (req, res, next) => {
 });
 
 exports.getHourlyReports = catchAsync(async (req, res, next) => {
-  const hourlyReports = await HourlyReport.find({ room_id: req.body.room_id });
+  const hourlyReports = await HourlyReport.find({ room: req.body.room });
   res.status(200).json({
     status: 'success',
     results: hourlyReports.length,
@@ -26,7 +26,7 @@ exports.getHourlyReports = catchAsync(async (req, res, next) => {
 exports.getHourlyReport = catchAsync(async (req, res, next) => {
   const hourlyReports = await HourlyReport.find({
     _id: req.params.id,
-    room_id: req.body.room_id,
+    room: req.body.room,
   });
   res.status(200).json({
     status: 'success',
