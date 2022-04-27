@@ -1,5 +1,6 @@
 const Alert = require('../models/alertModel');
 const catchAsync = require('../utils/catchAsync');
+const APIFeatures = require('../utils/apiFeatures');
 
 exports.addAlert = catchAsync(async (req, res, next) => {
   const alert = new Alert(req.body);
@@ -15,11 +16,13 @@ exports.addAlert = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlerts = catchAsync(async (req, res, next) => {
-  const alerts = await Alert.find({ account: res.locals.user._id });
+  const features = new APIFeatures(Alert.find({ account: res.locals.user._id }), req.query).filter()
+  const docs = await features.query;
+
   res.status(200).json({
-    status: 'success',
-    results: alerts.length,
-    data: alerts,
+      status: 'success',
+      results: docs.length,
+      data:  docs
   });
 });
 
