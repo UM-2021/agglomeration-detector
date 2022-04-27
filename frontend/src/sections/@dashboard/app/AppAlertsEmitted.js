@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
@@ -5,6 +6,7 @@ import { Card, Typography } from '@mui/material';
 import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import Iconify from '../../../components/Iconify';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
@@ -34,15 +36,25 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 4;
-
 export default function AppAlertsEmitted() {
+  const [activeAlerts, setActiveAlerts] = useState(0);
+
+  useEffect(() => {
+    const fetchActiveAlerts = async () => {
+      const { data } = await instance('/api/alerts?handled=false');
+      const alerts = data.data;
+
+      if (alerts) setActiveAlerts(alerts.length);
+    };
+
+    fetchActiveAlerts();
+  }, []);
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Iconify icon="ant-design:alert-filled" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(activeAlerts)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         Active Alerts
       </Typography>
