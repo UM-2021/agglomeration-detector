@@ -8,6 +8,7 @@ router.use(authController.protect);
 
 router.post('/', alertController.addAlert);
 router.get('/', alertController.getAlerts);
+router.get('/room/:id', alertController.getAlertsByRoom);
 router.patch('/:id', alertController.updateAlert);
 router.get('/:id', alertController.getAlert);
 router.delete('/:id', alertController.deleteAlert);

@@ -19,6 +19,11 @@ const alertSchema = new mongoose.Schema(
       ref: 'Room',
       required: [true, 'Indicate the related room'],
     },
+    account: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Indicate the owner of the room'],
+    },
     handled: {
       type: Boolean,
       default: false,
@@ -33,5 +38,13 @@ const alertSchema = new mongoose.Schema(
       toObject: { virtuals: true }
   }
 );
+
+alertSchema.pre(/^find/, function(next) {
+  this.populate({
+      path: 'room',
+      select: 'name capacity _id'
+  });
+  next();
+});
 
 module.exports = mongoose.model('Alert', alertSchema);

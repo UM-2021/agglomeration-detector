@@ -13,7 +13,6 @@ const roomSchema = new mongoose.Schema({
   account: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    default: '624d899fc8a03325e89cf851',
     required: [true, 'Indicate the owner of the room'],
   },
   createdAt: {

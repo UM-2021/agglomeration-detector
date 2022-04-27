@@ -15,7 +15,16 @@ exports.addAlert = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlerts = catchAsync(async (req, res, next) => {
-  const alerts = await Alert.find({ room: req.body.room });
+  const alerts = await Alert.find({ account: res.locals.user._id });
+  res.status(200).json({
+    status: 'success',
+    results: alerts.length,
+    data: alerts,
+  });
+});
+
+exports.getAlertsByRoom = catchAsync(async (req, res, next) => {
+  const alerts = await Alert.find({ room: req.params.id });
   res.status(200).json({
     status: 'success',
     results: alerts.length,
