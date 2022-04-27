@@ -4,6 +4,10 @@
 
 ## Local development
 
+### Prerequisites
+
+* Node 14
+
 ### 1 - Create `.env` files in `backend` and `frontend` folders.
 
 #### `backend/.env`
