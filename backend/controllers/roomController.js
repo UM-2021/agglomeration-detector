@@ -15,7 +15,7 @@ exports.addRoom = catchAsync(async (req, res, next) => {
 });
 
 exports.getRooms = catchAsync(async (req, res, next) => {
-  const rooms = await Room.find({ user_to_notify: res.locals.user._id });
+  const rooms = await Room.find({ account: res.locals.user._id });
   res.status(200).json({
     status: 'success',
     results: rooms.length,

@@ -15,7 +15,7 @@ exports.addLiveReport = catchAsync(async (req, res, next) => {
 });
 
 exports.getLiveReports = catchAsync(async (req, res, next) => {
-  const liveReports = await LiveReport.find({ room_id: req.body.room_id });
+  const liveReports = await LiveReport.find({ room: req.body.room });
   res.status(200).json({
     status: 'success',
     results: liveReports.length,
@@ -26,7 +26,7 @@ exports.getLiveReports = catchAsync(async (req, res, next) => {
 exports.getLiveReport = catchAsync(async (req, res, next) => {
   const liveReports = await LiveReport.find({
     _id: req.params.id,
-    room_id: req.body.room_id,
+    room: req.body.room,
   });
   res.status(200).json({
     status: 'success',

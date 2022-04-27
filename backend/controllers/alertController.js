@@ -15,7 +15,7 @@ exports.addAlert = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlerts = catchAsync(async (req, res, next) => {
-  const alerts = await Alert.find({ room_id: req.body.room_id });
+  const alerts = await Alert.find({ room: req.body.room });
   res.status(200).json({
     status: 'success',
     results: alerts.length,
@@ -26,7 +26,7 @@ exports.getAlerts = catchAsync(async (req, res, next) => {
 exports.getAlert = catchAsync(async (req, res, next) => {
   const alert = await Alert.find({
     _id: req.params.id,
-    room_id: req.body.room_id,
+    room: req.body.room,
   });
   res.status(200).json({
     status: 'success',

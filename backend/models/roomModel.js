@@ -10,7 +10,7 @@ const roomSchema = new mongoose.Schema({
     required: [true, 'Introduce a max capacity for the room'],
     default: 10,
   },
-  user_to_notify: {
+  account: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     default: '624d899fc8a03325e89cf851',
