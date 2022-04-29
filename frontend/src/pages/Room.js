@@ -40,7 +40,7 @@ export default function Room() {
           <Button
             variant="contained"
             component={RouterLink}
-            to="#"
+            to="new"
             startIcon={<Iconify icon="eva:plus-fill" />}
           >
             New Room

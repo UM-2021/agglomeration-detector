@@ -49,6 +49,9 @@ export default function RoomInfo({ capacity, roomId }) {
 
   // TODO: Fetch current capacity and airquelity over time
   useEffect(() => {
+    setAirQuality(32);
+    setCurrentCapacity(1);
+
     setInterval(() => {
       setAirQuality(32);
       setCurrentCapacity(1);
