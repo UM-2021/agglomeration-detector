@@ -1,6 +1,6 @@
-const Alert = require('../models/alertModel');
-const catchAsync = require('../utils/catchAsync');
-const APIFeatures = require('../utils/apiFeatures');
+const Alert = require("../models/alertModel");
+const catchAsync = require("../utils/catchAsync");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.addAlert = catchAsync(async (req, res, next) => {
   const alert = new Alert(req.body);
@@ -9,27 +9,33 @@ exports.addAlert = catchAsync(async (req, res, next) => {
       return next(err);
     }
     res.status(201).json({
-      status: 'success',
+      status: "success",
       data: alert,
     });
   });
 });
 
 exports.getAlerts = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Alert.find({ account: res.locals.user._id }), req.query).filter()
+  const features = new APIFeatures(
+    Alert.find({ account: res.locals.user._id }),
+    req.query
+  )
+    .filter()
+    .limit()
+    .paginate();
   const docs = await features.query;
 
   res.status(200).json({
-      status: 'success',
-      results: docs.length,
-      data:  docs
+    status: "success",
+    results: docs.length,
+    data: docs,
   });
 });
 
 exports.getAlertsByRoom = catchAsync(async (req, res, next) => {
   const alerts = await Alert.find({ room: req.params.id });
   res.status(200).json({
-    status: 'success',
+    status: "success",
     results: alerts.length,
     data: alerts,
   });
@@ -41,7 +47,7 @@ exports.getAlert = catchAsync(async (req, res, next) => {
     room: req.body.room,
   });
   res.status(200).json({
-    status: 'success',
+    status: "success",
     data: alert,
   });
 });
@@ -53,7 +59,7 @@ exports.updateAlert = catchAsync(async (req, res, next) => {
 
   const result = await Alert.findByIdAndUpdate(id, updatedAlert, options);
   res.status(200).json({
-    status: 'success',
+    status: "success",
     data: result,
   });
 });
@@ -61,7 +67,7 @@ exports.updateAlert = catchAsync(async (req, res, next) => {
 exports.deleteAlert = catchAsync(async (req, res, next) => {
   const alert = await Alert.deleteOne({ _id: req.params.id });
   res.status(204).json({
-    status: 'success',
+    status: "success",
     data: alert,
   });
 });

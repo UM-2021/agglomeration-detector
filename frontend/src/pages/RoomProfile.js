@@ -48,6 +48,7 @@ export default function RoomProfile() {
       const room = data.data;
       if (room) setRoom(room);
       setLoading(false);
+      setOccupacy((1 / room.capacity) * 100);
 
       // TODO: Fetch current capacity by X seconds and calculate occupacy
       setInterval(() => {
@@ -79,7 +80,7 @@ export default function RoomProfile() {
           <Button
             variant="contained"
             component={RouterLink}
-            to="#"
+            to="edit"
             startIcon={<Iconify icon="eva:edit-2-fill" />}
           >
             Edit Room

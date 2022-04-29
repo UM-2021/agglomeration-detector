@@ -13,6 +13,7 @@ import User from '../pages/User';
 import Products from '../pages/Products';
 import NotFound from '../pages/Page404';
 import RoomProfile from '../pages/RoomProfile';
+import RoomForm from '../pages/RoomForm';
 import ProtectedRoutes from './protectedRoute';
 
 // ----------------------------------------------------------------------
@@ -28,7 +29,9 @@ export default function Router() {
           children: [
             { path: 'app', element: <DashboardApp /> },
             { path: 'rooms', element: <Room /> },
+            { path: 'rooms/new', element: <RoomForm /> },
             { path: 'rooms/:id', element: <RoomProfile /> },
+            { path: 'rooms/:id/edit', element: <RoomForm /> },
             { path: 'alerts', element: <Alert /> },
             // Demo Purposes
             { path: 'blog', element: <Blog /> },
