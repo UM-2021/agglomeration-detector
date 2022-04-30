@@ -99,6 +99,8 @@ function OrderItem({ item, index, isLast }) {
             sx={{ fontWeight: 'light' }}
           >{`${formttedType}`}</Typography>
           <Iconify
+            width={11}
+            height={11}
             icon="akar-icons:circle-fill"
             sx={{ color: handled ? 'success.main' : 'error.main' }}
           />

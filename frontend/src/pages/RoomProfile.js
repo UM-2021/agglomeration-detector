@@ -59,7 +59,14 @@ export default function RoomProfile() {
     fetchRoom();
   }, [id]);
 
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <Container>
+        <Grid container spacing={3}>
+          <Loader />
+        </Grid>
+      </Container>
+    );
 
   return (
     <Page title={`${room.name} | AggDetector`}>
