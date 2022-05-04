@@ -12,5 +12,6 @@ router.get('/room/:id', alertController.getAlertsByRoom);
 router.patch('/:id', alertController.updateAlert);
 router.get('/:id', alertController.getAlert);
 router.delete('/:id', alertController.deleteAlert);
+router.patch('/handle/:id', alertController.handleAlert);
 
 module.exports = router;
