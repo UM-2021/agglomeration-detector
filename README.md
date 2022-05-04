@@ -6,7 +6,7 @@
 
 ### Prerequisites
 
-* Node 14
+- Node 14
 
 ### 1 - Create `.env` files in `backend` and `frontend` folders.
 
@@ -21,6 +21,8 @@ PORT=3000
 JWT_SECRET=celeste
 JWT_COOKIE_EXPIRES_IN=3600
 JWT_EXPIRES_IN=90d
+EMAIL_ADDRESS=agglomerationdetector@gmail.com
+EMAIL_PASSWORD=Admin1234*
 ```
 
 #### `frontend/.env`
