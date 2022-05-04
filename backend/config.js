@@ -11,6 +11,8 @@ const config = {
   JWT_SECRET: process.env.JWT_SECRET,
   JWT_COOKIE_EXPIRES_IN: process.env.JWT_COOKIE_EXPIRES_IN,
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
+  EMAIL_ADDRESS: process.env.EMAIL_ADDRESS,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
 };
 
 module.exports = config;

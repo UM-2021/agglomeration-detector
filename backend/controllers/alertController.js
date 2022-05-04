@@ -1,6 +1,10 @@
 const Alert = require('../models/alertModel');
 const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeatures');
+const nodemailer = require('nodemailer');
+const config = require('./../config');
+
+const { EMAIL_ADDRESS, EMAIL_PASSWORD } = config;
 
 exports.addAlert = catchAsync(async (req, res, next) => {
   const alert = new Alert(req.body);
@@ -11,6 +15,28 @@ exports.addAlert = catchAsync(async (req, res, next) => {
     res.status(201).json({
       status: 'success',
       data: alert,
+    });
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: EMAIL_ADDRESS,
+        pass: EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: EMAIL_ADDRESS,
+      to: 'juan.staricco@decemberlabs.com',
+      subject: 'Agglomeration Detector',
+      text: 'This is a new Alert on your Room!',
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
     });
   });
 });
@@ -74,7 +100,7 @@ exports.deleteAlert = catchAsync(async (req, res, next) => {
 
 exports.handleAlert = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  const options = { new: false };
+  const options = { new: true };
 
   const result = await Alert.findByIdAndUpdate(id, { handled: true }, options);
   res.status(200).json({
