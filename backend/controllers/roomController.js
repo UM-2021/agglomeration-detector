@@ -2,7 +2,7 @@ const Room = require('../models/roomModel');
 const catchAsync = require('../utils/catchAsync');
 
 exports.addRoom = catchAsync(async (req, res, next) => {
-  const room = new Room({...req.body, account: res.locals.user._id });
+  const room = new Room({ ...req.body, account: res.locals.user._id });
   await room.save(function (err, room) {
     if (err) {
       return next(err);
@@ -48,5 +48,18 @@ exports.deleteRoom = catchAsync(async (req, res, next) => {
   res.status(204).json({
     status: 'success',
     data: room,
+  });
+});
+
+exports.getRoomsMonthlyOccupancy = catchAsync(async (req, res, next) => {
+  const rooms = await Room.find({ account: res.locals.user._id });
+
+  // js get actual month, first day and last day
+  // request of weekly from first yo last
+  // creo un registro en los weekly reports
+  res.status(200).json({
+    status: 'success',
+    results: rooms.length,
+    data: rooms,
   });
 });

@@ -11,5 +11,6 @@ router.get('/', liveReportsController.getLiveReports);
 router.patch('/:id', liveReportsController.updateLiveReport);
 router.get('/:id', liveReportsController.getLiveReport);
 router.delete('/:id', liveReportsController.deleteLiveReport);
+router.get('/room/:room', liveReportsController.getLiveRoomData);
 
 module.exports = router;

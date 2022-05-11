@@ -11,5 +11,6 @@ router.get('/', roomController.getRooms);
 router.patch('/:id', roomController.updateRoom);
 router.get('/:id', roomController.getRoom);
 router.delete('/:id', roomController.deleteRoom);
+router.get('/monthlyOccuppancy', roomController.getRoomsMonthlyOccupancy);
 
 module.exports = router;

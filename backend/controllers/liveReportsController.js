@@ -92,13 +92,13 @@ exports.getLiveReports = catchAsync(async (req, res, next) => {
 });
 
 exports.getLiveReport = catchAsync(async (req, res, next) => {
-  const liveReports = await LiveReport.find({
+  const liveReport = await LiveReport.find({
     _id: req.params.id,
     room: req.body.room,
   });
   res.status(200).json({
     status: 'success',
-    data: liveReports,
+    data: liveReport,
   });
 });
 
@@ -123,5 +123,20 @@ exports.deleteLiveReport = catchAsync(async (req, res, next) => {
   res.status(204).json({
     status: 'success',
     data: liveReports,
+  });
+});
+
+exports.getLiveRoomData = catchAsync(async (req, res, next) => {
+  const lastLiveReport = await LiveReport.findOne(
+    {
+      room: req.params.room,
+    },
+    {},
+    { sort: { created_at: -1 } }
+  );
+  console.log(lastLiveReport);
+  res.status(200).json({
+    status: 'success',
+    data: lastLiveReport,
   });
 });
