@@ -11,7 +11,9 @@ import {
   LinearProgress,
   Box,
   Card,
-  styled
+  styled,
+  Alert,
+  AlertTitle
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -34,6 +36,13 @@ const RootStyle = styled(Card)(({ theme }) => ({
   height: '100%'
 }));
 
+const CodeBlock = styled(Box)(({ theme }) => ({
+  display: 'inline-block',
+  padding: theme.spacing(1, 2),
+  backgroundColor: theme.palette.grey['200'],
+  borderRadius: 3
+}));
+
 export default function RoomProfile() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -48,11 +57,11 @@ export default function RoomProfile() {
       const room = data.data;
       if (room) setRoom(room);
       setLoading(false);
-      setOccupacy((1 / room.capacity) * 100);
+      setOccupacy((0 / room.capacity) * 100);
 
       // TODO: Fetch current capacity by X seconds and calculate occupacy
       setInterval(() => {
-        setOccupacy((1 / room.capacity) * 100);
+        setOccupacy((0 / room.capacity) * 100);
       }, 10000);
     };
 
@@ -95,6 +104,22 @@ export default function RoomProfile() {
         </Stack>
 
         <Grid container spacing={3}>
+          <Grid item xs={12} md={12} lg={12}>
+            {!room.connected && (
+              <Alert severity="warning">
+                <AlertTitle>Camera not connected</AlertTitle>
+                <Typography mb={2}>
+                  This device is not yet connected. Please share with the administrator the
+                  following ID:
+                </Typography>
+                <CodeBlock>
+                  <pre>
+                    <code>{id}</code>
+                  </pre>
+                </CodeBlock>
+              </Alert>
+            )}
+          </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <RoomPreview image={mockImgCover(1)} />
           </Grid>

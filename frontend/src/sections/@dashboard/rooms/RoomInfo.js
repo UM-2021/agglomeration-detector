@@ -38,23 +38,24 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 RoomInfo.propTypes = {
   roomId: PropTypes.string,
-  capacity: PropTypes.number
+  capacity: PropTypes.number,
+  connected: PropTypes.bool
 };
 
 // ----------------------------------------------------------------------
 
-export default function RoomInfo({ capacity, roomId }) {
+export default function RoomInfo({ capacity, connected, roomId }) {
   const [airQuality, setAirQuality] = useState(0);
   const [currentCapacity, setCurrentCapacity] = useState(0);
 
-  // TODO: Fetch current capacity and airquelity over time
+  // TODO: Fetch current capacity and air quality over time
   useEffect(() => {
     setAirQuality(32);
-    setCurrentCapacity(1);
+    setCurrentCapacity(0);
 
     setInterval(() => {
       setAirQuality(32);
-      setCurrentCapacity(1);
+      setCurrentCapacity(0);
     }, 10000);
   }, []);
 
@@ -76,7 +77,7 @@ export default function RoomInfo({ capacity, roomId }) {
           <IconWrapperStyle>
             <Iconify icon="akar-icons:air" width={24} height={24} />
           </IconWrapperStyle>
-          <Typography variant="h3">{airQuality}</Typography>
+          <Typography variant="h3">{connected ? airQuality : '--'}</Typography>
           <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
             Air Quality
           </Typography>
