@@ -3,12 +3,14 @@ const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeatures');
 const nodemailer = require('nodemailer');
 const config = require('./../config');
+const User = require('../models/userModel');
+const Room = require('../models/roomModel');
 
 const { EMAIL_ADDRESS, EMAIL_PASSWORD } = config;
 
 exports.addAlert = catchAsync(async (req, res, next) => {
   const alert = new Alert(req.body);
-  await alert.save(function (err, alert) {
+  await alert.save(async function (err, alert) {
     if (err) {
       return next(err);
     }
@@ -23,12 +25,18 @@ exports.addAlert = catchAsync(async (req, res, next) => {
         pass: EMAIL_PASSWORD,
       },
     });
+    const roomId = req.body.room;
+    const room = await Room.findById(roomId);
 
+    const userId = req.body.account;
+    const user = await User.findById(userId);
+
+    const alertValue = req.body.value;
     const mailOptions = {
       from: EMAIL_ADDRESS,
-      to: 'juan.staricco@decemberlabs.com',
+      to: user.email,
       subject: 'Agglomeration Detector',
-      text: 'This is a new Alert on your Room!',
+      text: `This is a new ${alertValue} on your Room ${room.name}!`,
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
