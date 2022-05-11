@@ -74,6 +74,7 @@ export default function RoomNewEditForm() {
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
           <Card>
+            <CardHeader title="Room Name" />
             <CardContent>
               <TextField
                 fullWidth
@@ -87,8 +88,8 @@ export default function RoomNewEditForm() {
 
           <Card>
             <CardHeader
-              title="Dimensions"
-              subheader="The width and length of the room will be used to calculate the air quality."
+              title="Capacity"
+              subheader="The following field indicates the maximum number of people which are allowed to be at the same time in this room."
             />
             <CardContent>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -99,24 +100,6 @@ export default function RoomNewEditForm() {
                   {...getFieldProps('capacity')}
                   error={Boolean(touched.capacity && errors.capacity)}
                   helperText={touched.capacity && errors.capacity}
-                />
-
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Width"
-                  {...getFieldProps('width')}
-                  error={Boolean(touched.width && errors.width)}
-                  helperText={touched.width && errors.width}
-                />
-
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Length"
-                  {...getFieldProps('length')}
-                  error={Boolean(touched.length && errors.length)}
-                  helperText={touched.length && errors.length}
                 />
               </Stack>
             </CardContent>
