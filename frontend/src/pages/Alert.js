@@ -103,11 +103,27 @@ export default function Alert() {
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = alerts.filter((n) => !n.handled).map((n) => n.id);
-      console.log(newSelecteds);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
+  };
+
+  const handleResolve = async (id) => {
+    let tempAlerts;
+    const res = await instance.patch(`/api/alerts/handle/${id}`);
+    const alert = res.data.data;
+
+    if (res.status < 299) tempAlerts = alerts.filter((a) => a.id !== id);
+    setAlerts([...tempAlerts, alert]);
+  };
+
+  const handleMultipleResolve = async () => {
+    const requests = selected.map((id) => instance.patch(`/api/alerts/handle/${id}`));
+    const res = await Promise.all([requests]);
+    const updatedAlerts = res.map((r) => r.data);
+    const tempAlerts = alerts.filter((a) => a.id in selected);
+    setAlerts([...tempAlerts, ...updatedAlerts]);
   };
 
   const handleClick = (event, id) => {
@@ -161,6 +177,7 @@ export default function Alert() {
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
+            handleMultipleResolve={handleMultipleResolve}
           />
 
           <Scrollbar>
@@ -223,7 +240,7 @@ export default function Alert() {
                             </TableCell>
 
                             <TableCell align="right">
-                              <AlertMoreMenu />
+                              <AlertMoreMenu id={id} handleResolve={() => handleResolve(id)} />
                             </TableCell>
                           </TableRow>
                         );

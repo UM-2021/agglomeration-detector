@@ -1,15 +1,21 @@
 import { useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
-export default function AlertMoreMenu() {
+AlertMoreMenu.propTypes = {
+  id: PropTypes.string,
+  handleResolve: PropTypes.func
+};
+
+export default function AlertMoreMenu({ id, handleResolve }) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -30,7 +36,11 @@ export default function AlertMoreMenu() {
           <ListItemIcon>
             <Iconify icon="bi:clipboard2-check-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Resolve" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText
+            primary="Resolve"
+            primaryTypographyProps={{ variant: 'body2' }}
+            onClick={handleResolve}
+          />
         </MenuItem>
       </Menu>
     </>

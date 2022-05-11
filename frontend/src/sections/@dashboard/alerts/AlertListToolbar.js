@@ -39,10 +39,16 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 AlertListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
-  onFilterName: PropTypes.func
+  onFilterName: PropTypes.func,
+  handleMultipleResolve: PropTypes.func
 };
 
-export default function AlertListToolbar({ numSelected, filterName, onFilterName }) {
+export default function AlertListToolbar({
+  numSelected,
+  filterName,
+  onFilterName,
+  handleMultipleResolve
+}) {
   return (
     <RootStyle
       sx={{
@@ -71,7 +77,7 @@ export default function AlertListToolbar({ numSelected, filterName, onFilterName
 
       {numSelected > 0 ? (
         <Tooltip title="Resolve">
-          <IconButton>
+          <IconButton onClick={handleMultipleResolve}>
             <Iconify icon="bi:clipboard2-check-fill" />
           </IconButton>
         </Tooltip>
