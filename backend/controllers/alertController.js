@@ -1,11 +1,7 @@
 const Alert = require('../models/alertModel');
 const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeatures');
-const nodemailer = require('nodemailer');
 const config = require('./../config');
-const User = require('../models/userModel');
-const Room = require('../models/roomModel');
-
 const { EMAIL_ADDRESS, EMAIL_PASSWORD } = config;
 
 exports.addAlert = catchAsync(async (req, res, next) => {
@@ -17,34 +13,6 @@ exports.addAlert = catchAsync(async (req, res, next) => {
     res.status(201).json({
       status: 'success',
       data: alert,
-    });
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: EMAIL_ADDRESS,
-        pass: EMAIL_PASSWORD,
-      },
-    });
-    const roomId = req.body.room;
-    const room = await Room.findById(roomId);
-
-    const userId = req.body.account;
-    const user = await User.findById(userId);
-
-    const alertValue = req.body.value;
-    const mailOptions = {
-      from: EMAIL_ADDRESS,
-      to: user.email,
-      subject: 'Agglomeration Detector',
-      text: `This is a new ${alertValue} on your Room ${room.name}!`,
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
     });
   });
 });

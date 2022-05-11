@@ -1,12 +1,80 @@
 const LiveReport = require('../models/liveReportsModel');
 const catchAsync = require('../utils/catchAsync');
+const nodemailer = require('nodemailer');
+const config = require('./../config');
+const User = require('../models/userModel');
+const Room = require('../models/roomModel');
+const Alert = require('../models/alertModel');
+const { EMAIL_ADDRESS, EMAIL_PASSWORD } = config;
 
 exports.addLiveReport = catchAsync(async (req, res, next) => {
   const liveReports = new LiveReport(req.body);
-  await liveReports.save(function (err, liveReports) {
+  await liveReports.save(async function (err, liveReports) {
     if (err) {
       return next(err);
     }
+    const roomId = req.body.room;
+    const room = await Room.findById(roomId);
+
+    if (
+      req.body.airData.co2 > 1000 ||
+      req.body.airData.co2 < 200 ||
+      req.body.maxOccupancy > room.capacity + req.body.occupancy_threshold
+    ) {
+      let alertType;
+      let alertValue;
+      if (req.body.airData.co2 > 1000 || req.body.airData.co2 < 200) {
+        alertType = 'air';
+        alertValue = 'Bad air quality detected';
+      }
+
+      if (
+        req.body.maxOccupancy >
+        room.capacity + req.body.occupancy_threshold
+      ) {
+        alertType = 'capacity';
+        alertValue = 'Room overpopulation detected';
+      }
+
+      const alert = new Alert({
+        room: roomId,
+        type: alertType,
+        value: alertValue,
+        account: room.account,
+      });
+      await alert.save(async function (err) {
+        if (err) {
+          return next(err);
+        }
+      });
+
+      const userId = room.account;
+      const user = await User.findById(userId);
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: EMAIL_ADDRESS,
+          pass: EMAIL_PASSWORD,
+        },
+      });
+
+      const mailOptions = {
+        from: EMAIL_ADDRESS,
+        to: user.email,
+        subject: 'Agglomeration Detector',
+        text: `This is a new ${alertValue} on your Room ${room.name}!`,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    }
+
     res.status(201).json({
       status: 'success',
       data: liveReports,
