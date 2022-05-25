@@ -134,7 +134,6 @@ exports.getLiveRoomData = catchAsync(async (req, res, next) => {
     {},
     { sort: { created_at: -1 } }
   );
-  console.log(lastLiveReport);
   res.status(200).json({
     status: 'success',
     data: lastLiveReport,

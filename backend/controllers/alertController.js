@@ -1,8 +1,6 @@
 const Alert = require('../models/alertModel');
 const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeatures');
-const config = require('./../config');
-const { EMAIL_ADDRESS, EMAIL_PASSWORD } = config;
 
 exports.addAlert = catchAsync(async (req, res, next) => {
   const alert = new Alert(req.body);
