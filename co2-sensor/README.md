@@ -10,7 +10,7 @@
 
 ### 1. Create a `.env` file in this directory
 
-```
+```bash
 ROOMID=
 JWT_TOKEN=
 PROD_URL=
