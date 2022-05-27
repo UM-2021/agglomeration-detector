@@ -18,6 +18,8 @@ PROD_URL=
 
 ### 2. Install dependencies
 
+> Optionally a virtual environment could be used.
+
 ```bash
 pip install -r requirements.txt
 ```
