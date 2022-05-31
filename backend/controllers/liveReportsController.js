@@ -16,25 +16,9 @@ exports.addLiveReport = catchAsync(async (req, res, next) => {
     const roomId = req.body.room;
     const room = await Room.findById(roomId);
 
-    if (
-      req.body.airData.co2 > 1000 ||
-      req.body.airData.co2 < 200 ||
-      req.body.maxOccupancy > room.capacity + req.body.occupancy_threshold
-    ) {
-      let alertType;
-      let alertValue;
-      if (req.body.airData.co2 > 1000 || req.body.airData.co2 < 200) {
-        alertType = 'air';
-        alertValue = 'Bad air quality detected';
-      }
-
-      if (
-        req.body.maxOccupancy >
-        room.capacity + req.body.occupancy_threshold
-      ) {
-        alertType = 'capacity';
-        alertValue = 'Room overpopulation detected';
-      }
+    if (req.body.maxOccupancy > room.capacity + req.body.occupancy_threshold) {
+      const alertType = 'capacity';
+      const alertValue = 'Room overpopulation detected';
 
       const alert = new Alert({
         room: roomId,

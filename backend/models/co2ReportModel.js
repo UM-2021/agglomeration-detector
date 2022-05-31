@@ -1,27 +1,14 @@
 const mongoose = require('mongoose');
 
-const liveReportsSchema = new mongoose.Schema(
+const co2ReportsSchema = new mongoose.Schema(
   {
-    averageOccupancy: {
-      type: Number,
-      default: 0,
-    },
-    maxOccupancy: {
-      type: Number,
-      default: 0,
-    },
-    occupancy_threshold: {
-      type: Number,
-      default: 1,
-      required: true,
-    },
     time: {
       type: String,
       default: Date.now().toString(),
     },
-    airData: {
-      type: Object,
-      required: false,
+    co2: {
+      type: Number,
+      required: true,
     },
     room: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,4 +26,4 @@ const liveReportsSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('LiveReports', liveReportsSchema);
+module.exports = mongoose.model('co2Reports', co2ReportsSchema);
