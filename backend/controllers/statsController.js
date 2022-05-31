@@ -89,15 +89,29 @@ exports.getRoomCo2ReportLive = catchAsync(async (req, res, next) => {
 });
 
 exports.getRoomsCo2ReportLive = catchAsync(async (req, res, next) => {
-  const lastRoomCo2Report = await Co2Report.findOne(
-    {
-      room: req.params.id,
-    },
-    {},
-    { sort: { created_at: -1 } }
-  );
+  let rooms = await Room.find({ account: res.locals.user._id });
+
+  rooms = rooms.map(async (room) => {
+    const co2Report = await Co2Report.findOne(
+      {
+        room: room._id,
+      },
+      {},
+      { sort: { created_at: -1 } }
+    );
+    return {
+      room: room._id,
+      name: room.name,
+      co2: co2Report ? co2Report.co2 : null,
+      time: co2Report ? co2Report.time : null,
+      createdAt: co2Report ? co2Report.createdAt : null,
+    };
+  });
+
+  rooms = await Promise.all(rooms);
+
   res.status(200).json({
     status: 'success',
-    data: lastRoomCo2Report,
+    data: rooms,
   });
 });
