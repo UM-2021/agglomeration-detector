@@ -244,49 +244,110 @@ exports.getRoomsCo2ReportsMonthly = catchAsync(async (req, res, next) => {
     const co2Reports = await Co2Report.find({ room: room._id });
 
     const roomMonthlyReport = [];
-    let roomMonthlyReportActualDate = co2Reports[0].date;
-    let roomMonthlyReportActualCo2 = co2Reports[0].co2;
-    let roomMonthlyReportActualQuantity = 1;
-    let diff;
+    if (co2Reports && co2Reports.length > 0) {
+      let roomMonthlyReportActualDate = co2Reports[0].date;
+      let roomMonthlyReportActualCo2 = co2Reports[0].co2;
+      let roomMonthlyReportActualQuantity = 1;
+      let diff;
 
-    co2Reports.map((rep, index) => {
-      if (index !== 0) {
-        diff = DateTime.fromJSDate(rep.date).diff(
-          DateTime.fromJSDate(roomMonthlyReportActualDate),
-          ['hours']
-        );
-        if (Math.floor(diff.toObject().hours) < 6) {
-          roomMonthlyReportActualQuantity++;
-          roomMonthlyReportActualCo2 =
-            (roomMonthlyReportActualCo2 + rep.co2) /
-            roomMonthlyReportActualQuantity;
-        } else {
+      co2Reports.map((rep, index) => {
+        if (index !== 0) {
+          diff = DateTime.fromJSDate(rep.date).diff(
+            DateTime.fromJSDate(roomMonthlyReportActualDate),
+            ['hours']
+          );
+          if (Math.floor(diff.toObject().hours) < 6) {
+            roomMonthlyReportActualQuantity++;
+            roomMonthlyReportActualCo2 =
+              (roomMonthlyReportActualCo2 + rep.co2) /
+              roomMonthlyReportActualQuantity;
+          } else {
+            roomMonthlyReport.push([
+              roomMonthlyReportActualDate,
+              roomMonthlyReportActualCo2,
+            ]);
+            roomMonthlyReportActualQuantity = 1;
+            roomMonthlyReportActualCo2 = rep.co2;
+            roomMonthlyReportActualDate = rep.date;
+          }
+        }
+        if (index === co2Reports.length - 1)
           roomMonthlyReport.push([
             roomMonthlyReportActualDate,
             roomMonthlyReportActualCo2,
           ]);
-          roomMonthlyReportActualQuantity = 1;
-          roomMonthlyReportActualCo2 = rep.co2;
-          roomMonthlyReportActualDate = rep.date;
-        }
-      }
-      if (index === co2Reports.length - 1)
-        roomMonthlyReport.push([
-          roomMonthlyReportActualDate,
-          roomMonthlyReportActualCo2,
-        ]);
-    });
+      });
 
-    const name = room.name;
+      const name = room.name;
 
-    roomsMonthlyReport['name'] = roomMonthlyReport;
+      roomsMonthlyReport[name] = roomMonthlyReport;
+    }
   });
 
   rooms = await Promise.all(rooms);
 
-  console.log(roomsMonthlyReport);
+  res.status(200).json({
+    status: 'success',
+    data: roomsMonthlyReport,
+  });
+});
+
+exports.getRoomsOccupancyReportsMonthly = catchAsync(async (req, res, next) => {
+  //{"roomname1":[(fecha, occupancy), (fecha, occupancy), ...],"roomname2":[(fecha, occupancy), (fecha, occupancy), ...]}
+  let monthData = new Date();
+  monthData = monthData.setMonth(monthData.getMonth() - 1);
+
+  const roomsMonthlyReport = {};
+  let rooms = await Room.find({ account: res.locals.user._id });
+
+  rooms = rooms.map(async (room) => {
+    const liveReports = await LiveReport.find({ room: room._id });
+
+    const roomMonthlyReport = [];
+    if (liveReports && liveReports.length > 0) {
+      let roomMonthlyReportActualDate = liveReports[0].date;
+      let roomMonthlyReportActualAverage = liveReports[0].averageOccupancy;
+      let roomMonthlyReportActualQuantity = 1;
+      let diff;
+
+      liveReports.map((rep, index) => {
+        if (index !== 0) {
+          diff = DateTime.fromJSDate(rep.date).diff(
+            DateTime.fromJSDate(roomMonthlyReportActualDate),
+            ['hours']
+          );
+          if (Math.floor(diff.toObject().hours) < 6) {
+            roomMonthlyReportActualQuantity++;
+            roomMonthlyReportActualAverage =
+              (roomMonthlyReportActualAverage + rep.averageOccupancy) /
+              roomMonthlyReportActualQuantity;
+          } else {
+            roomMonthlyReport.push([
+              roomMonthlyReportActualDate,
+              roomMonthlyReportActualAverage,
+            ]);
+            roomMonthlyReportActualQuantity = 1;
+            roomMonthlyReportActualAverage = rep.averageOccupancy;
+            roomMonthlyReportActualDate = rep.date;
+          }
+        }
+        if (index === liveReports.length - 1)
+          roomMonthlyReport.push([
+            roomMonthlyReportActualDate,
+            roomMonthlyReportActualAverage,
+          ]);
+      });
+
+      const name = room.name;
+
+      roomsMonthlyReport[name] = roomMonthlyReport;
+    }
+  });
+
+  rooms = await Promise.all(rooms);
 
   res.status(200).json({
     status: 'success',
+    data: roomsMonthlyReport,
   });
 });
