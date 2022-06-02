@@ -10,13 +10,18 @@ router.use(authController.protect);
 router.post('/:id/stats/co2', statsController.addCo2Report);
 router.get('/:id/stats/co2/live', statsController.getRoomCo2ReportLive);
 // TODO
-router.get('/:id/stats/co2/monthly', statsController.statsFirst);
+router.get('/:id/stats/co2/monthly', statsController.getRoomCo2ReportsMonthly);
 router.get('/stats/co2/live', statsController.getRoomsCo2ReportLive);
+// TODO
 router.get('/stats/co2/monthly', statsController.statsFirst);
 
 router.get('/:id/stats/occupancy/live', roomController.getRoomLiveOccupancy);
 // TODO
-router.get('/:id/stats/occupancy/monthly', statsController.statsFirst);
+router.get(
+  '/:id/stats/occupancy/monthly',
+  statsController.getRoomOccupancyReportsMonthly
+);
+
 router.get('/stats/occupancy/live', roomController.getRoomsLiveOccupancy);
 //TODO
 router.get('/stats/occupancy/monthly', statsController.statsFirst);

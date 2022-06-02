@@ -19,9 +19,9 @@ const liveReportsSchema = new mongoose.Schema(
       type: String,
       default: Date.now().toString(),
     },
-    airData: {
-      type: Object,
-      required: false,
+    date: {
+      type: Date,
+      default: Date.now(),
     },
     room: {
       type: mongoose.Schema.Types.ObjectId,

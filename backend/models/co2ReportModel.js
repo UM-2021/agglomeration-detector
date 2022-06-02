@@ -6,6 +6,10 @@ const co2ReportsSchema = new mongoose.Schema(
       type: String,
       default: Date.now().toString(),
     },
+    date: {
+      type: Date,
+      default: Date.now(),
+    },
     co2: {
       type: Number,
       required: true,
