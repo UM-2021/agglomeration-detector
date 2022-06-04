@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 // material
 import { useTheme, styled } from '@mui/material/styles';
@@ -35,6 +35,7 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 export default function AppRoomsFrequency() {
   const theme = useTheme();
+  const intervalId = useRef(null);
   const [roomsOccupancy, setRoomsOccupancy] = useState([]);
   const baseChartOptions = merge(BaseOptionChart(), {
     labels: [],
@@ -63,7 +64,6 @@ export default function AppRoomsFrequency() {
         data: { data: rooms }
       } = await instance('/api/rooms/stats/occupancy/live');
 
-      console.log(rooms);
       const labels = [];
       const roomOccupancyTmp = [];
       rooms.forEach((room) => {
@@ -77,9 +77,14 @@ export default function AppRoomsFrequency() {
 
     fetchRoomsOccupancy();
 
-    setInterval(() => {
+    intervalId.current = setInterval(() => {
       fetchRoomsOccupancy();
     }, 180000);
+
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+      intervalId.current = null;
+    };
   }, []);
 
   return (
