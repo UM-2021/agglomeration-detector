@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Typography, CardContent, alpha, Button } from '@mui/material';
+import { Box, Link, Card, Grid, Typography, CardContent, alpha, Button, Stack, Chip, Badge } from '@mui/material';
 // utils
 import { fDate } from '../../../utils/formatTime';
 //
@@ -66,7 +66,7 @@ RoomCard.propTypes = {
 };
 
 export default function RoomCard({ room, index }) {
-  const { _id: id, name, capacity, createdAt } = room;
+  const { _id: id, name, capacity, createdAt, connected } = room;
   const [currentCapacity, setCurrentCapacity] = useState(0);
   const [activeAlerts, setActiveAlerts] = useState(0);
   useEffect(() => {
@@ -94,10 +94,10 @@ export default function RoomCard({ room, index }) {
 
   const ROOM_INFO = [
     {
-      number: `${Math.round((currentCapacity / capacity) * 100)} %`,
+      number: `${connected ? Math.round((currentCapacity / capacity) * 100) : 0} %`,
       icon: 'fluent:people-audience-20-filled'
     },
-    { number: activeAlerts, icon: 'eva:alert-triangle-fill' }
+    { number: connected ? activeAlerts : 0, icon: 'eva:alert-triangle-fill' }
   ];
 
   return (
@@ -128,7 +128,15 @@ export default function RoomCard({ room, index }) {
           </Typography>
 
           <TitleStyle to={id} color="inherit" variant="subtitle2" underline="hover" component={RouterLink}>
-            {name}
+            <Stack direction="horizontal" justifyContent="space-between">
+              <Box>{name}</Box>
+              <Box>
+                <Iconify
+                  icon={connected ? 'bi:check-circle-fill' : 'clarity:times-circle-solid'}
+                  sx={{ color: connected ? 'success.main' : 'error.main' }}
+                />
+              </Box>
+            </Stack>
           </TitleStyle>
 
           <InfoStyle>
