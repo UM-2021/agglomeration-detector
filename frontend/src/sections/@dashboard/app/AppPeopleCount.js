@@ -1,7 +1,7 @@
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 // component
@@ -34,6 +34,7 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function AppPeopleCount() {
+  const intervalId = useRef(null);
   const [liveOccupancy, setLiveOccupancy] = useState(0);
   useEffect(() => {
     const fetchRoomsOccupancy = async () => {
@@ -49,6 +50,11 @@ export default function AppPeopleCount() {
     setInterval(() => {
       fetchRoomsOccupancy();
     }, 180000);
+
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+      intervalId.current = null;
+    };
   }, []);
 
   return (
