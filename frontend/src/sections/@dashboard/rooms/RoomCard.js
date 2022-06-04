@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -8,6 +9,7 @@ import { fDate } from '../../../utils/formatTime';
 //
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import Iconify from '../../../components/Iconify';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
@@ -65,14 +67,37 @@ RoomCard.propTypes = {
 
 export default function RoomCard({ room, index }) {
   const { _id: id, name, capacity, createdAt } = room;
-  const alerts = 0;
+  const [currentCapacity, setCurrentCapacity] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState(0);
+  useEffect(() => {
+    const fetchData = async () => {
+      const alertsReq = instance(`/api/alerts/room/${id}?handled=false`);
+      const capacityReq = instance(`/api/rooms/${id}/stats/occupancy/live`);
 
+      const [
+        {
+          data: { results: alerts }
+        },
+        {
+          data: {
+            data: { averageOccupancy }
+          }
+        }
+      ] = await Promise.all([alertsReq, capacityReq]);
+
+      setActiveAlerts(alerts);
+      setCurrentCapacity(averageOccupancy || 0);
+    };
+
+    fetchData();
+  });
+  console.log(currentCapacity);
   const ROOM_INFO = [
     {
-      number: `${Math.round((1 / capacity) * 100)} %`,
+      number: `${Math.round((currentCapacity / capacity) * 100)} %`,
       icon: 'fluent:people-audience-20-filled'
     },
-    { number: alerts, icon: 'eva:alert-triangle-fill' }
+    { number: activeAlerts, icon: 'eva:alert-triangle-fill' }
   ];
 
   return (
@@ -98,21 +123,11 @@ export default function RoomCard({ room, index }) {
         </CardMediaStyle>
 
         <CardContent sx={{ pt: 4 }}>
-          <Typography
-            gutterBottom
-            variant="caption"
-            sx={{ color: 'text.disabled', display: 'block' }}
-          >
+          <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
             {fDate(createdAt)}
           </Typography>
 
-          <TitleStyle
-            to={id}
-            color="inherit"
-            variant="subtitle2"
-            underline="hover"
-            component={RouterLink}
-          >
+          <TitleStyle to={id} color="inherit" variant="subtitle2" underline="hover" component={RouterLink}>
             {name}
           </TitleStyle>
 
