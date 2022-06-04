@@ -19,7 +19,6 @@ exports.statsFirst = catchAsync(async (req, res, next) => {
 exports.addCo2Report = catchAsync(async (req, res, next) => {
   const { co2 } = req.body;
   const room = req.params.id;
-  console.log({ co2, room });
   const co2Report = new Co2Report({ co2, room });
   await co2Report.save(async function (err, co2Report) {
     if (err) {

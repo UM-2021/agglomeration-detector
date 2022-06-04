@@ -91,7 +91,7 @@ export default function RoomCard({ room, index }) {
 
     fetchData();
   });
-  console.log(currentCapacity);
+
   const ROOM_INFO = [
     {
       number: `${Math.round((currentCapacity / capacity) * 100)} %`,

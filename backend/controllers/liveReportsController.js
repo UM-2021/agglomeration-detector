@@ -33,7 +33,6 @@ exports.addLiveReport = catchAsync(async (req, res, next) => {
       });
 
       const userId = room.account;
-      console.log(userId);
       const user = await User.findById(userId);
 
       const transporter = nodemailer.createTransport({

@@ -86,7 +86,6 @@ export default function RoomProfile() {
     fetchRoomInfo();
 
     intervalId.current = setInterval(() => {
-      console.log('Interval Room profile');
       fetchRoomInfo();
     }, 10000);
 
