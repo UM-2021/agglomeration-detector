@@ -1,10 +1,12 @@
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 // component
 import Iconify from '../../../components/Iconify';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
@@ -26,23 +28,32 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   marginBottom: theme.spacing(3),
   color: theme.palette.info.dark,
-  backgroundImage: `linear-gradient(135deg, ${alpha(theme.palette.info.dark, 0)} 0%, ${alpha(
-    theme.palette.info.dark,
-    0.24
-  )} 100%)`
+  backgroundImage: `linear-gradient(135deg, ${alpha(theme.palette.info.dark, 0)} 0%, ${alpha(theme.palette.info.dark, 0.24)} 100%)`
 }));
 
 // ----------------------------------------------------------------------
 
-const TOTAL = 214;
-
 export default function AppPeopleCount() {
+  const [liveOccupancy, setLiveOccupancy] = useState(0);
+  useEffect(() => {
+    const fetchRoomsOccupancy = async () => {
+      const {
+        data: { data: rooms }
+      } = await instance('/api/rooms/stats/occupancy/live');
+
+      const total = rooms.reduce((prev, curr) => prev + curr.averageOccupancy, 0);
+      setLiveOccupancy(total);
+    };
+
+    fetchRoomsOccupancy();
+  }, []);
+
   return (
     <RootStyle>
       <IconWrapperStyle>
         <Iconify icon="fa6-solid:arrows-down-to-people" width={24} height={24} />
       </IconWrapperStyle>
-      <Typography variant="h3">{fShortenNumber(TOTAL)}</Typography>
+      <Typography variant="h3">{fShortenNumber(liveOccupancy)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         People Count
       </Typography>
