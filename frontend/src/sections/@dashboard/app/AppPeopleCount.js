@@ -46,6 +46,9 @@ export default function AppPeopleCount() {
     };
 
     fetchRoomsOccupancy();
+    setInterval(() => {
+      fetchRoomsOccupancy();
+    }, 180000);
   }, []);
 
   return (
@@ -55,7 +58,7 @@ export default function AppPeopleCount() {
       </IconWrapperStyle>
       <Typography variant="h3">{fShortenNumber(liveOccupancy)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        People Count
+        Live People Count
       </Typography>
     </RootStyle>
   );
