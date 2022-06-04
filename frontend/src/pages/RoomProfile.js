@@ -1,5 +1,5 @@
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // material
 import {
   Grid,
@@ -48,24 +48,52 @@ export default function RoomProfile() {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [occupacy, setOccupacy] = useState(0);
+  const [currentCapacity, setCurrentCapacity] = useState(0);
+  const [airQuality, setAirQuality] = useState(0);
   const [room, setRoom] = useState(null);
+  const intervalId = useRef(null);
   // const { title, capacity, maxCapacity } = ROOMS[parseInt(id, 10)];
 
   useEffect(() => {
-    const fetchRoom = async () => {
-      const { data } = await instance(`/api/rooms/${id}`);
-      const room = data.data;
-      if (room) setRoom(room);
-      setLoading(false);
-      setOccupacy((0 / room.capacity) * 100);
+    const fetchRoomInfo = async () => {
+      const roomReq = instance(`/api/rooms/${id}`);
+      const occupancyReq = instance(`/api/rooms/${id}/stats/occupancy/live`);
+      const co2Req = instance(`/api/rooms/${id}/stats/co2/live`);
 
-      // TODO: Fetch current capacity by X seconds and calculate occupacy
-      setInterval(() => {
-        setOccupacy((0 / room.capacity) * 100);
-      }, 10000);
+      const [
+        {
+          data: { data: roomData }
+        },
+        {
+          data: {
+            data: { averageOccupancy }
+          }
+        },
+        {
+          data: {
+            data: { co2 }
+          }
+        }
+      ] = await Promise.all([roomReq, occupancyReq, co2Req]);
+
+      setRoom(roomData);
+      setAirQuality(co2);
+      setCurrentCapacity(averageOccupancy);
+      setOccupacy((averageOccupancy / roomData.capacity) * 100);
+      setLoading(false);
     };
 
-    fetchRoom();
+    fetchRoomInfo();
+
+    intervalId.current = setInterval(() => {
+      console.log('Interval Room profile');
+      fetchRoomInfo();
+    }, 10000);
+
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+      intervalId.current = null;
+    };
   }, [id]);
 
   if (loading)
@@ -82,23 +110,12 @@ export default function RoomProfile() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Stack direction="row" alignItems="center" justifyContent="center">
-            <IconButton
-              size="large"
-              edge="start"
-              disableRipple
-              style={{ backgroundColor: 'transparent' }}
-              onClick={() => navigate(-1)}
-            >
+            <IconButton size="large" edge="start" disableRipple style={{ backgroundColor: 'transparent' }} onClick={() => navigate(-1)}>
               <Iconify icon="eva:arrow-ios-back-outline" fontSize="inherit" color="black" />
             </IconButton>
             <Typography variant="h4">{`Room: ${room.name}`}</Typography>
           </Stack>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="edit"
-            startIcon={<Iconify icon="eva:edit-2-fill" />}
-          >
+          <Button variant="contained" component={RouterLink} to="edit" startIcon={<Iconify icon="eva:edit-2-fill" />}>
             Edit Room
           </Button>
         </Stack>
@@ -108,10 +125,7 @@ export default function RoomProfile() {
             {!room.connected && (
               <Alert severity="warning">
                 <AlertTitle>Camera not connected</AlertTitle>
-                <Typography mb={2}>
-                  This device is not yet connected. Please share with the administrator the
-                  following ID:
-                </Typography>
+                <Typography mb={2}>This device is not yet connected. Please share with the administrator the following ID:</Typography>
                 <CodeBlock>
                   <pre>
                     <code>{id}</code>
@@ -124,22 +138,16 @@ export default function RoomProfile() {
             <RoomPreview image={mockImgCover(1)} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <RoomInfo roomdId={id} capacity={room.capacity} />
+            <RoomInfo currentCapacity={currentCapacity} airQuality={airQuality} capacity={room.capacity} connected={room.connected} />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <RootStyle sx={{ width: '100%' }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ width: '100%', mr: 1 }}>
-                  <LinearProgress
-                    sx={{ height: 10, borderRadius: 5 }}
-                    variant="determinate"
-                    value={occupacy}
-                  />
+                  <LinearProgress sx={{ height: 10, borderRadius: 5 }} variant="determinate" value={room.connected ? occupacy : 0} />
                 </Box>
                 <Box sx={{ minWidth: 35 }}>
-                  <Typography variant="body2" color="text.secondary">{`${Math.round(
-                    occupacy
-                  )}%`}</Typography>
+                  <Typography variant="body2" color="text.secondary">{`${room.connected ? Math.round(occupacy) : 0}%`}</Typography>
                 </Box>
               </Box>
             </RootStyle>
