@@ -59,10 +59,6 @@ export default function RoomOccupacy({ roomId, roomName }) {
       const labels = data.map((d) => new Date(d[0]).getTime());
       const values = data.map((d) => d[1].toFixed(0));
 
-      console.log(data);
-      console.log(labels);
-      console.log(values);
-
       setChartOptions({ ...chartOptions, labels });
       setPersons([{ name: roomName, type: 'area', data: values }]);
     };
