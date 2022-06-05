@@ -152,7 +152,7 @@ export default function RoomProfile() {
             </RootStyle>
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
-            <RoomOccupacy />
+            <RoomOccupacy roomId={room._id} roomName={room.name} />
           </Grid>
         </Grid>
       </Container>
