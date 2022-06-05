@@ -25,7 +25,7 @@ RoomOccupacy.propTypes = {
 
 export default function RoomOccupacy({ roomId, roomName }) {
   const [persons, setPersons] = useState([{ name: roomName, type: 'area', data: [] }]);
-  const basechartOptions = merge(BaseOptionChart(), {
+  const baseChartOptions = merge(BaseOptionChart(), {
     stroke: { width: [3] },
     plotOptions: { bar: { columnWidth: '11%', borderRadius: 4 } },
     fill: { type: ['gradient'] },
@@ -48,7 +48,7 @@ export default function RoomOccupacy({ roomId, roomName }) {
       }
     }
   });
-  const [chartOptions, setChartOptions] = useState(basechartOptions);
+  const [chartOptions, setChartOptions] = useState(baseChartOptions);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +59,7 @@ export default function RoomOccupacy({ roomId, roomName }) {
       const labels = data.map((d) => new Date(d[0]).getTime());
       const values = data.map((d) => d[1].toFixed(0));
 
-      setChartOptions({ ...chartOptions, labels });
+      setChartOptions((co) => ({ ...co, labels }));
       setPersons([{ name: roomName, type: 'area', data: values }]);
     };
 

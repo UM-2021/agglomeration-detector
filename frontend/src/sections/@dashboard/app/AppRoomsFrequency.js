@@ -71,7 +71,7 @@ export default function AppRoomsFrequency() {
         roomOccupancyTmp.push(room.averageOccupancy || 0);
       });
 
-      setChartOptions({ ...chartOptions, labels });
+      setChartOptions((co) => ({ ...co, labels }));
       setRoomsOccupancy(roomOccupancyTmp);
     };
 

@@ -128,7 +128,7 @@ export default function RoomCard({ room, index }) {
           </Typography>
 
           <TitleStyle to={id} color="inherit" variant="subtitle2" underline="hover" component={RouterLink}>
-            <Stack direction="horizontal" justifyContent="space-between">
+            <Stack direction="row" justifyContent="space-between">
               <Box>{name}</Box>
               <Box>
                 <Iconify
