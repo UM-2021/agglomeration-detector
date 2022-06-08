@@ -50,6 +50,7 @@ export default function RoomProfile() {
   const [occupacy, setOccupacy] = useState(0);
   const [currentCapacity, setCurrentCapacity] = useState(0);
   const [airQuality, setAirQuality] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(null);
   const [room, setRoom] = useState(null);
   const intervalId = useRef(null);
   // const { title, capacity, maxCapacity } = ROOMS[parseInt(id, 10)];
@@ -66,7 +67,7 @@ export default function RoomProfile() {
         },
         {
           data: {
-            data: { averageOccupancy }
+            data: { averageOccupancy, createdAt }
           }
         },
         {
@@ -76,9 +77,13 @@ export default function RoomProfile() {
         }
       ] = await Promise.all([roomReq, occupancyReq, co2Req]);
 
+      const isoDate = new Date(createdAt).toISOString().split('T');
+      const updatedAt = `${isoDate[0]} ${isoDate[1].slice(0, 5)}`;
+
       setRoom(roomData);
       setAirQuality(co2);
       setCurrentCapacity(averageOccupancy);
+      setLastUpdated(updatedAt);
       setOccupacy((averageOccupancy / roomData.capacity) * 100);
       setLoading(false);
     };
@@ -137,7 +142,13 @@ export default function RoomProfile() {
             <RoomPreview image={mockImgCover(1)} />
           </Grid>
           <Grid item xs={12} md={6} lg={8}>
-            <RoomInfo currentCapacity={currentCapacity} airQuality={airQuality} capacity={room.capacity} connected={room.connected} />
+            <RoomInfo
+              currentCapacity={currentCapacity}
+              airQuality={airQuality}
+              capacity={room.capacity}
+              connected={room.connected}
+              lastUpdated={lastUpdated}
+            />
           </Grid>
           <Grid item xs={12} md={12} lg={12}>
             <RootStyle sx={{ width: '100%' }}>
