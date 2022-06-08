@@ -16,17 +16,13 @@ export default function RoomNewEditForm() {
 
   const RoomSchema = Yup.object().shape({
     name: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Name required'),
-    capacity: Yup.number().min(0, 'Negative values not allowed!').required('Capacity required'),
-    width: Yup.number().min(0, 'Negative values not allowed!').required('Width required'),
-    length: Yup.number().min(0, 'Negative values not allowed!').required('Length required')
+    capacity: Yup.number().min(0, 'Negative values not allowed!').required('Capacity required')
   });
 
   const formik = useFormik({
     initialValues: {
       name: '',
-      capacity: '',
-      width: '',
-      length: ''
+      capacity: ''
     },
     validationSchema: RoomSchema,
     onSubmit: async ({ name, capacity }) => {
@@ -105,13 +101,7 @@ export default function RoomNewEditForm() {
             </CardContent>
           </Card>
 
-          <LoadingButton
-            size="large"
-            type="submit"
-            variant="contained"
-            loading={isSubmitting}
-            style={{ maxWidth: 150 }}
-          >
+          <LoadingButton size="large" type="submit" variant="contained" loading={isSubmitting} style={{ maxWidth: 150 }}>
             Save
           </LoadingButton>
         </Stack>
