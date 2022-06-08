@@ -238,7 +238,7 @@ exports.getRoomsCo2ReportsMonthly = catchAsync(async (req, res, next) => {
   let monthData = new Date();
   monthData = monthData.setMonth(monthData.getMonth() - 1);
 
-  const roomsMonthlyReport = {};
+  const roomsMonthlyReport = [];
   let rooms = await Room.find({ account: res.locals.user._id });
 
   rooms = rooms.map(async (room) => {
@@ -259,9 +259,10 @@ exports.getRoomsCo2ReportsMonthly = catchAsync(async (req, res, next) => {
           );
           if (Math.floor(diff.toObject().hours) < 6) {
             roomMonthlyReportActualQuantity++;
-            roomMonthlyReportActualCo2 =
+            roomMonthlyReportActualCo2 = Math.round(
               (roomMonthlyReportActualCo2 + rep.co2) /
-              roomMonthlyReportActualQuantity;
+                roomMonthlyReportActualQuantity
+            );
           } else {
             roomMonthlyReport.push([
               roomMonthlyReportActualDate,
@@ -281,7 +282,7 @@ exports.getRoomsCo2ReportsMonthly = catchAsync(async (req, res, next) => {
 
       const name = room.name;
 
-      roomsMonthlyReport[name] = roomMonthlyReport;
+      roomsMonthlyReport.push({ name, data: roomMonthlyReport });
     }
   });
 
