@@ -47,10 +47,16 @@ exports.addCo2Report = catchAsync(async (req, res, next) => {
       const user = await User.findById(userId);
 
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'Outlook365',
+        host: 'smtp.office365.com',
+        port: '587',
         auth: {
           user: EMAIL_ADDRESS,
           pass: EMAIL_PASSWORD,
+        },
+        tls: {
+          ciphers: 'SSLv3',
+          rejectUnauthorized: false,
         },
       });
 
