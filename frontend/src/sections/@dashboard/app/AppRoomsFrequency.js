@@ -1,4 +1,5 @@
 import { merge } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 // material
 import { useTheme, styled } from '@mui/material/styles';
@@ -7,6 +8,7 @@ import { Card, CardHeader } from '@mui/material';
 import { fNumber } from '../../../utils/formatNumber';
 //
 import { BaseOptionChart } from '../../../components/charts';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
@@ -31,36 +33,65 @@ const ChartWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [4344, 5435, 1443];
-
 export default function AppRoomsFrequency() {
   const theme = useTheme();
-
-  const chartOptions = merge(BaseOptionChart(), {
-    colors: [theme.palette.primary.main, theme.palette.warning.main, theme.palette.info.main],
-    labels: ['Room A', 'Room B', 'Room C'],
+  const intervalId = useRef(null);
+  const [roomsOccupancy, setRoomsOccupancy] = useState([]);
+  const baseChartOptions = merge(BaseOptionChart(), {
+    labels: [],
+    colors: [],
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: 'center' },
     dataLabels: { enabled: true, dropShadow: { enabled: false } },
+    noData: {
+      text: 'Loading...'
+    },
     tooltip: {
       fillSeriesColor: false,
       y: {
-        formatter: (seriesName) => fNumber(seriesName),
-        title: {
-          formatter: (seriesName) => `#${seriesName}`
-        }
+        formatter: (seriesName) => fNumber(seriesName)
       }
     },
     plotOptions: {
       pie: { donut: { labels: { show: false } } }
     }
   });
+  const [chartOptions, setChartOptions] = useState(baseChartOptions);
+
+  useEffect(() => {
+    const fetchRoomsOccupancy = async () => {
+      const {
+        data: { data: rooms }
+      } = await instance('/api/rooms/stats/occupancy/live');
+
+      const labels = [];
+      const roomOccupancyTmp = [];
+      rooms.forEach((room) => {
+        labels.push(room.name);
+        roomOccupancyTmp.push(room.averageOccupancy || 0);
+      });
+
+      setChartOptions((co) => ({ ...co, labels }));
+      setRoomsOccupancy(roomOccupancyTmp);
+    };
+
+    fetchRoomsOccupancy();
+
+    intervalId.current = setInterval(() => {
+      fetchRoomsOccupancy();
+    }, 180000);
+
+    return () => {
+      if (intervalId.current) clearInterval(intervalId.current);
+      intervalId.current = null;
+    };
+  }, []);
 
   return (
     <Card>
-      <CardHeader title="Rooms Frequency" />
+      <CardHeader title="Rooms Frequency" subheader="Live" />
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart type="pie" series={CHART_DATA} options={chartOptions} height={280} />
+        <ReactApexChart type="pie" series={roomsOccupancy} options={chartOptions} height={280} />
       </ChartWrapperStyle>
     </Card>
   );

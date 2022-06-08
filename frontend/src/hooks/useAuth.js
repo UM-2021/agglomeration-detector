@@ -29,10 +29,7 @@ export const useAuth = () => {
         password
       });
 
-      localStorage.setItem(
-        'aggUser',
-        JSON.stringify({ ...res.data.data.user, token: res.data.token })
-      );
+      localStorage.setItem('aggUser', JSON.stringify({ ...res.data.data.user, token: res.data.token }));
 
       await setUserContext();
       // setCurrentUser({ user: res.data.data.user, authed: true });
@@ -64,11 +61,7 @@ export const useAuth = () => {
         password,
         confirmPassword
       });
-      console.log('REGISTER', res.data);
-      localStorage.setItem(
-        'aggUser',
-        JSON.stringify({ ...res.data.data.user, token: res.data.token })
-      );
+      localStorage.setItem('aggUser', JSON.stringify({ ...res.data.data.user, token: res.data.token }));
 
       await setUserContext();
       // setCurrentUser({ user: res.data.data.user, authed: true });

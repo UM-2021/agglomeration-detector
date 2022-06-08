@@ -33,11 +33,19 @@ exports.getAlerts = catchAsync(async (req, res, next) => {
 });
 
 exports.getAlertsByRoom = catchAsync(async (req, res, next) => {
-  const alerts = await Alert.find({ room: req.params.id });
+  const features = new APIFeatures(
+    Alert.find({ room: req.params.id }),
+    req.query
+  )
+    .filter()
+    .limit()
+    .paginate();
+  const docs = await features.query;
+
   res.status(200).json({
     status: 'success',
-    results: alerts.length,
-    data: alerts,
+    results: docs.length,
+    data: docs,
   });
 });
 

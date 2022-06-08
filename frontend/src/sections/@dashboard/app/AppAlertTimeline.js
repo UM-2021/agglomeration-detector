@@ -3,14 +3,7 @@ import { faker } from '@faker-js/faker';
 import PropTypes from 'prop-types';
 // material
 import { Card, Typography, CardHeader, CardContent, Chip, Badge, Icon, Stack } from '@mui/material';
-import {
-  Timeline,
-  TimelineItem,
-  TimelineContent,
-  TimelineConnector,
-  TimelineSeparator,
-  TimelineDot
-} from '@mui/lab';
+import { Timeline, TimelineItem, TimelineContent, TimelineConnector, TimelineSeparator, TimelineDot } from '@mui/lab';
 // utils
 import instance from '../../../middlewares/axios';
 import Loader from '../../../components/Loader';
@@ -68,8 +61,7 @@ function OrderItem({ item, index, isLast }) {
     handled
   } = item;
 
-  const formttedType =
-    type === 'capacity' ? TYPES.capacity : type === 'air' ? TYPES.air : 'Something went wrong';
+  const formttedType = type === 'capacity' ? TYPES.capacity : type === 'air' ? TYPES.air : 'Something went wrong';
 
   return (
     <TimelineItem>
@@ -88,22 +80,9 @@ function OrderItem({ item, index, isLast }) {
       </TimelineSeparator>
       <TimelineContent>
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography
-            variant="subtitle2"
-            component="span"
-            sx={{ fontWeight: 'bold' }}
-          >{`${name}: `}</Typography>
-          <Typography
-            variant="subtitle2"
-            component="span"
-            sx={{ fontWeight: 'light' }}
-          >{`${formttedType}`}</Typography>
-          <Iconify
-            width={11}
-            height={11}
-            icon="akar-icons:circle-fill"
-            sx={{ color: handled ? 'success.main' : 'error.main' }}
-          />
+          <Typography variant="subtitle2" component="span" sx={{ fontWeight: 'bold' }}>{`${name}: `}</Typography>
+          <Typography variant="subtitle2" component="span" sx={{ fontWeight: 'light' }}>{`${formttedType}`}</Typography>
+          <Iconify width={11} height={11} icon="akar-icons:circle-fill" sx={{ color: handled ? 'success.main' : 'error.main' }} />
         </Stack>
         <Typography variant="caption" component="div" sx={{ color: 'text.secondary' }}>
           {fDateTime(createdAt)}
@@ -144,12 +123,7 @@ export default function AppAlertTimeline() {
         <CardContent>
           <Timeline>
             {alerts.map((item, index) => (
-              <OrderItem
-                key={item.id}
-                index={index}
-                item={item}
-                isLast={index === alerts.length - 1}
-              />
+              <OrderItem key={item.id} index={index} item={item} isLast={index === alerts.length - 1} />
             ))}
           </Timeline>
         </CardContent>

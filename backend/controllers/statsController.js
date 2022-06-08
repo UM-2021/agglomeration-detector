@@ -19,7 +19,6 @@ exports.statsFirst = catchAsync(async (req, res, next) => {
 exports.addCo2Report = catchAsync(async (req, res, next) => {
   const { co2 } = req.body;
   const room = req.params.id;
-  console.log({ co2, room });
   const co2Report = new Co2Report({ co2, room });
   await co2Report.save(async function (err, co2Report) {
     if (err) {
@@ -83,16 +82,20 @@ exports.addCo2Report = catchAsync(async (req, res, next) => {
 });
 
 exports.getRoomCo2ReportLive = catchAsync(async (req, res, next) => {
-  const lastRoomCo2Report = await Co2Report.findOne(
+  const co2Report = await Co2Report.findOne(
     {
       room: req.params.id,
     },
     {},
-    { sort: { created_at: -1 } }
+    { sort: { createdAt: -1 } }
   );
   res.status(200).json({
     status: 'success',
-    data: lastRoomCo2Report,
+    data: {
+      co2: co2Report ? co2Report.co2 : null,
+      time: co2Report ? co2Report.time : null,
+      createdAt: co2Report ? co2Report.createdAt : null,
+    },
   });
 });
 
@@ -105,7 +108,7 @@ exports.getRoomsCo2ReportLive = catchAsync(async (req, res, next) => {
         room: room._id,
       },
       {},
-      { sort: { created_at: -1 } }
+      { sort: { createdAt: -1 } }
     );
     return {
       room: room._id,
@@ -175,9 +178,7 @@ exports.getRoomOccupancyReportsMonthly = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: {
-      roomMonthlyReport,
-    },
+    data: roomMonthlyReport,
   });
 });
 
@@ -303,7 +304,7 @@ exports.getRoomsOccupancyReportsMonthly = catchAsync(async (req, res, next) => {
   let monthData = new Date();
   monthData = monthData.setMonth(monthData.getMonth() - 1);
 
-  const roomsMonthlyReport = {};
+  const roomsMonthlyReport = [];
   let rooms = await Room.find({ account: res.locals.user._id });
 
   rooms = rooms.map(async (room) => {
@@ -324,9 +325,10 @@ exports.getRoomsOccupancyReportsMonthly = catchAsync(async (req, res, next) => {
           );
           if (Math.floor(diff.toObject().hours) < 6) {
             roomMonthlyReportActualQuantity++;
-            roomMonthlyReportActualAverage =
+            roomMonthlyReportActualAverage = Math.round(
               (roomMonthlyReportActualAverage + rep.averageOccupancy) /
-              roomMonthlyReportActualQuantity;
+                roomMonthlyReportActualQuantity
+            );
           } else {
             roomMonthlyReport.push([
               roomMonthlyReportActualDate,
@@ -346,7 +348,7 @@ exports.getRoomsOccupancyReportsMonthly = catchAsync(async (req, res, next) => {
 
       const name = room.name;
 
-      roomsMonthlyReport[name] = roomMonthlyReport;
+      roomsMonthlyReport.push({ name, data: roomMonthlyReport });
     }
   });
 

@@ -1,39 +1,37 @@
 import { merge } from 'lodash';
+import { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import PropTypes from 'prop-types';
 // material
 import { Card, CardHeader, Box } from '@mui/material';
 //
 import { BaseOptionChart } from '../../../components/charts';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
-const CHART_DATA = [
-  {
-    name: 'Room A',
-    type: 'area',
-    data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
-  }
-];
+// const CHART_DATA = [
+//   {
+//     name: 'Room A',
+//     type: 'area',
+//     data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30]
+//   }
+// ];
 
-export default function AppPeoplePerRoom() {
-  const chartOptions = merge(BaseOptionChart(), {
+RoomOccupacy.propTypes = {
+  roomId: PropTypes.string,
+  roomName: PropTypes.string
+};
+
+export default function RoomOccupacy({ roomId, roomName }) {
+  const [persons, setPersons] = useState([{ name: roomName, type: 'area', data: [] }]);
+  const baseChartOptions = merge(BaseOptionChart(), {
     stroke: { width: [3] },
     plotOptions: { bar: { columnWidth: '11%', borderRadius: 4 } },
     fill: { type: ['gradient'] },
-    labels: [
-      '01/01/2003',
-      '02/01/2003',
-      '03/01/2003',
-      '04/01/2003',
-      '05/01/2003',
-      '06/01/2003',
-      '07/01/2003',
-      '08/01/2003',
-      '09/01/2003',
-      '10/01/2003',
-      '11/01/2003'
-    ],
-    xaxis: { type: 'datetime' },
+    xaxis: {
+      type: 'datetime'
+    },
     tooltip: {
       shared: true,
       intersect: false,
@@ -44,15 +42,35 @@ export default function AppPeoplePerRoom() {
           }
           return y;
         }
+      },
+      x: {
+        format: 'dd MMM HH:mm'
       }
     }
   });
+  const [chartOptions, setChartOptions] = useState(baseChartOptions);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {
+        data: { data }
+      } = await instance(`/api/rooms/${roomId}/stats/occupancy/monthly`);
+
+      const labels = data.map((d) => new Date(d[0]).getTime());
+      const values = data.map((d) => d[1].toFixed(0));
+
+      setChartOptions((co) => ({ ...co, labels }));
+      setPersons([{ name: roomName, type: 'area', data: values }]);
+    };
+
+    fetchData();
+  }, [roomId, roomName]);
 
   return (
     <Card>
       <CardHeader title="Persons" subheader="Over the last month" />
       <Box sx={{ p: 3, pb: 1 }} dir="ltr">
-        <ReactApexChart type="line" series={CHART_DATA} options={chartOptions} height={288} />
+        <ReactApexChart type="line" series={persons} options={chartOptions} height={288} />
       </Box>
     </Card>
   );

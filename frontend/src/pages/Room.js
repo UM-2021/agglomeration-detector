@@ -37,12 +37,7 @@ export default function Room() {
           <Typography variant="h4" gutterBottom>
             Rooms
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="new"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
+          <Button variant="contained" component={RouterLink} to="new" startIcon={<Iconify icon="eva:plus-fill" />}>
             New Room
           </Button>
         </Stack>

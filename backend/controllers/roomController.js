@@ -61,16 +61,16 @@ exports.getRoomLiveOccupancy = catchAsync(async (req, res, next) => {
       room: req.params.id,
     },
     {},
-    { sort: { created_at: -1 } }
+    { sort: { createdAt: -1 } }
   );
 
   res.status(200).json({
     status: 'success',
     data: {
-      averageOccupancy: liveReport.averageOccupancy,
-      maxOccupancy: liveReport.maxOccupancy,
-      time: liveReport.time,
-      createdAt: liveReport.createdAt,
+      averageOccupancy: liveReport ? liveReport.averageOccupancy : null,
+      maxOccupancy: liveReport ? liveReport.maxOccupancy : null,
+      time: liveReport ? liveReport.time : null,
+      createdAt: liveReport ? liveReport.createdAt : null,
     },
   });
 });
@@ -83,7 +83,7 @@ exports.getRoomsLiveOccupancy = catchAsync(async (req, res, next) => {
         room: room._id,
       },
       {},
-      { sort: { created_at: -1 } }
+      { sort: { createdAt: -1 } }
     );
     return {
       room: room._id,

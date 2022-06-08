@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Typography, CardContent, alpha, Button } from '@mui/material';
+import { Box, Link, Card, Grid, Typography, CardContent, alpha, Button, Stack, Chip, Badge } from '@mui/material';
 // utils
 import { fDate } from '../../../utils/formatTime';
 //
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import Iconify from '../../../components/Iconify';
+import instance from '../../../middlewares/axios';
 
 // ----------------------------------------------------------------------
 
@@ -64,15 +66,38 @@ RoomCard.propTypes = {
 };
 
 export default function RoomCard({ room, index }) {
-  const { _id: id, name, capacity, createdAt } = room;
-  const alerts = 0;
+  const { _id: id, name, capacity, createdAt, connected } = room;
+  const [currentCapacity, setCurrentCapacity] = useState(0);
+  const [activeAlerts, setActiveAlerts] = useState(0);
+  useEffect(() => {
+    const fetchData = async () => {
+      const alertsReq = instance(`/api/alerts/room/${id}?handled=false`);
+      const capacityReq = instance(`/api/rooms/${id}/stats/occupancy/live`);
+
+      const [
+        {
+          data: { results: alerts }
+        },
+        {
+          data: {
+            data: { averageOccupancy }
+          }
+        }
+      ] = await Promise.all([alertsReq, capacityReq]);
+
+      setActiveAlerts(alerts);
+      setCurrentCapacity(averageOccupancy || 0);
+    };
+
+    fetchData();
+  });
 
   const ROOM_INFO = [
     {
-      number: `${Math.round((1 / capacity) * 100)} %`,
+      number: `${connected ? Math.round((currentCapacity / capacity) * 100) : 0} %`,
       icon: 'fluent:people-audience-20-filled'
     },
-    { number: alerts, icon: 'eva:alert-triangle-fill' }
+    { number: connected ? activeAlerts : 0, icon: 'eva:alert-triangle-fill' }
   ];
 
   return (
@@ -98,22 +123,20 @@ export default function RoomCard({ room, index }) {
         </CardMediaStyle>
 
         <CardContent sx={{ pt: 4 }}>
-          <Typography
-            gutterBottom
-            variant="caption"
-            sx={{ color: 'text.disabled', display: 'block' }}
-          >
+          <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
             {fDate(createdAt)}
           </Typography>
 
-          <TitleStyle
-            to={id}
-            color="inherit"
-            variant="subtitle2"
-            underline="hover"
-            component={RouterLink}
-          >
-            {name}
+          <TitleStyle to={id} color="inherit" variant="subtitle2" underline="hover" component={RouterLink}>
+            <Stack direction="row" justifyContent="space-between">
+              <Box>{name}</Box>
+              <Box>
+                <Iconify
+                  icon={connected ? 'bi:check-circle-fill' : 'clarity:times-circle-solid'}
+                  sx={{ color: connected ? 'success.main' : 'error.main' }}
+                />
+              </Box>
+            </Stack>
           </TitleStyle>
 
           <InfoStyle>
