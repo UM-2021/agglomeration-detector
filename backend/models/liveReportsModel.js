@@ -16,8 +16,8 @@ const liveReportsSchema = new mongoose.Schema(
       required: true,
     },
     time: {
-      type: String,
-      default: Date.now().toString(),
+      type: Number,
+      default: Date.now(),
     },
     date: {
       type: Date,
