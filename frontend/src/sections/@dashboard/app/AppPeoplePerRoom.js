@@ -6,9 +6,11 @@ import { Card, CardHeader, Box } from '@mui/material';
 //
 import { BaseOptionChart } from '../../../components/charts';
 import instance from '../../../middlewares/axios';
+import Loader from '../../../components/Loader';
 
 // ----------------------------------------------------------------------
 
+const CHART_TYPES = ['line', 'column', 'area'];
 // const CHART_DATA = [
 //   {
 //     name: 'Room A',
@@ -36,16 +38,17 @@ const createSeries = (name, type, data) => {
       strokeWidth = 0;
       fillType = 'solid';
       break;
-    case 'area':
-      strokeWidth = 2;
-      fillType = 'gradient';
-      break;
+
     case 'line':
       strokeWidth = 3;
       fillType = 'solid';
       break;
 
+    case 'area':
     default:
+      type = 'area';
+      strokeWidth = 2;
+      fillType = 'gradient';
       break;
   }
 
@@ -58,7 +61,9 @@ const createSeries = (name, type, data) => {
 
 export default function AppPeoplePerRoom() {
   const [series, setSeries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const baseChartOptions = merge(BaseOptionChart(), {
+    labels: [],
     plotOptions: { bar: { columnWidth: '11%', borderRadius: 4 } },
     xaxis: { type: 'datetime' },
     noData: {
@@ -91,17 +96,21 @@ export default function AppPeoplePerRoom() {
       const seriesData = [];
       const strokeWidths = [];
       const fillTypes = [];
+      let labels = [];
 
-      data.forEach((room) => {
-        const serie = createSeries(room.name, 'line', room.data);
-        console.log(room);
-        seriesData.push(serie.series);
-        strokeWidths.push(serie.strokeWidth);
-        fillTypes.push(serie.fillType);
+      data.forEach((room, idx) => {
+        labels = [...labels, ...room.data.map((d) => new Date(d[0]).getTime())];
+        const values = room.data.map((d) => d[1]);
+        const { series, strokeWidth, fillType } = createSeries(room.name, CHART_TYPES[idx % CHART_TYPES.length], values);
+        seriesData.push(series);
+        strokeWidths.push(strokeWidth);
+        fillTypes.push(fillType);
       });
 
+      labels = [...new Set(labels)];
       setSeries(seriesData);
-      setChartOptions((co) => ({ ...co, stroke: { width: strokeWidths }, fill: { type: fillTypes } }));
+      setChartOptions((co) => ({ ...co, labels, stroke: { width: strokeWidths }, fill: { type: fillTypes } }));
+      setLoading(false);
     };
 
     fetchData();
@@ -110,8 +119,8 @@ export default function AppPeoplePerRoom() {
   return (
     <Card>
       <CardHeader title="Persons Per Room" subheader="Over the last month" />
-      <Box sx={{ p: 3, pb: 1 }} dir="ltr">
-        <ReactApexChart type="line" series={series} options={chartOptions} height={364} />
+      <Box sx={{ p: 3 }} dir="ltr">
+        {loading ? <Loader /> : <ReactApexChart series={series} options={chartOptions} height={364} />}
       </Box>
     </Card>
   );
