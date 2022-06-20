@@ -53,11 +53,13 @@ export default function RoomOccupacy({ roomId, roomName }) {
   useEffect(() => {
     const fetchData = async () => {
       const {
-        data: { data }
+        data: {
+          data: { roomMonthlyReport: data }
+        }
       } = await instance(`/api/rooms/${roomId}/stats/occupancy/monthly`);
 
       const labels = data.map((d) => new Date(d[0]).getTime());
-      const values = data.map((d) => d[1].toFixed(0));
+      const values = data.map((d) => d[1]);
 
       setChartOptions((co) => ({ ...co, labels }));
       setPersons([{ name: roomName, type: 'area', data: values }]);
