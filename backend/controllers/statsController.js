@@ -43,37 +43,37 @@ exports.addCo2Report = catchAsync(async (req, res, next) => {
         }
       });
 
-      const userId = roomEntity.account;
-      const user = await User.findById(userId);
+      // const userId = roomEntity.account;
+      // const user = await User.findById(userId);
 
-      const transporter = nodemailer.createTransport({
-        service: 'Outlook365',
-        host: 'smtp.office365.com',
-        port: '587',
-        auth: {
-          user: EMAIL_ADDRESS,
-          pass: EMAIL_PASSWORD,
-        },
-        tls: {
-          ciphers: 'SSLv3',
-          rejectUnauthorized: false,
-        },
-      });
+      // const transporter = nodemailer.createTransport({
+      //   service: 'Outlook365',
+      //   host: 'smtp.office365.com',
+      //   port: '587',
+      //   auth: {
+      //     user: EMAIL_ADDRESS,
+      //     pass: EMAIL_PASSWORD,
+      //   },
+      //   tls: {
+      //     ciphers: 'SSLv3',
+      //     rejectUnauthorized: false,
+      //   },
+      // });
 
-      const mailOptions = {
-        from: EMAIL_ADDRESS,
-        to: user.email,
-        subject: 'Agglomeration Detector',
-        text: `This is a new ${alertValue} on your Room ${roomEntity.name}!`,
-      };
+      // const mailOptions = {
+      //   from: EMAIL_ADDRESS,
+      //   to: user.email,
+      //   subject: 'Agglomeration Detector',
+      //   text: `This is a new ${alertValue} on your Room ${roomEntity.name}!`,
+      // };
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
+      // transporter.sendMail(mailOptions, function (error, info) {
+      //   if (error) {
+      //     console.log(error);
+      //   } else {
+      //     console.log('Email sent: ' + info.response);
+      //   }
+      // });
     }
     res.status(201).json({
       status: 'success',
